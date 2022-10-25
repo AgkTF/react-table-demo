@@ -1,7 +1,7 @@
-import React from 'react';
+import BasicTable from './components/BasicTable/BasicTable';
 
 function App() {
-  return <></>;
+  return <BasicTable />;
 }
 
 export default App;

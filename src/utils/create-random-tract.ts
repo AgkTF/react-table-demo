@@ -6,12 +6,12 @@ function createRandomTract(): Tract {
     id: faker.datatype.uuid(),
     tractNumber: faker.datatype.number(),
     isActive: faker.datatype.boolean(),
-    basinShortName: faker.datatype.string(3),
+    basinShortName: faker.random.alpha({ casing: 'upper', count: 3 }),
     stateShortName: faker.address.stateAbbr(),
     countyName: faker.address.county(),
     township: faker.random.alphaNumeric(4),
     range: faker.random.alphaNumeric(3),
-    section: faker.datatype.string(2),
+    section: faker.random.numeric(2),
     blockNumber: faker.random.alphaNumeric(4),
     abstractNumber: faker.random.alphaNumeric(4),
     legal: faker.lorem.sentence(),
@@ -25,9 +25,9 @@ function createRandomTract(): Tract {
     ]),
     ownershipStatus: faker.helpers.arrayElement(['Leased', 'Failed']),
     interestType: faker.helpers.arrayElement(['WI', 'ORRI', 'MI']),
-    grossAcres: faker.datatype.number(),
-    netAcres: faker.datatype.number(),
-    deliveredNRI: faker.datatype.number(),
+    grossAcres: faker.datatype.number({ max: 320 }),
+    netAcres: faker.datatype.number({ max: 320 }),
+    deliveredNRI: faker.datatype.number({ max: 100 }),
     costPerAcre: faker.datatype.number(),
     instrumentType: faker.helpers.arrayElement([
       'Oil&Gas Lease',
@@ -51,8 +51,8 @@ function createRandomTract(): Tract {
   };
 }
 
-export function createTracts(length: number) {
-  return new Array(length).fill(createRandomTract());
+export function createTracts(length: number): Tract[] {
+  return Array.from({ length }, createRandomTract);
 }
 
 export function createTractsInRange(max: number, min: number) {
