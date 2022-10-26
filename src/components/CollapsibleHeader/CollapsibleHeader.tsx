@@ -1,4 +1,4 @@
-import { MinusIcon } from '@heroicons/react/20/solid';
+import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
 
 type Props = {
   title: string;

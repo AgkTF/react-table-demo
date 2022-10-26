@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Tract } from '../../types';
 import { createTracts } from '../../utils';
 import { CollapsibleHeader } from '../CollapsibleHeader/CollapsibleHeader';
@@ -34,10 +34,11 @@ export default function BasicTable() {
       id: 'location',
       header: props => {
         console.log(props);
+
         return (
           <CollapsibleHeader
             title="Location"
-            clickHandler={toggleLocationColumns}
+            clickHandler={() => toggleColsVisibility('location')}
           />
         );
       },
@@ -74,7 +75,12 @@ export default function BasicTable() {
     }),
     columnHelper.group({
       id: 'ownership',
-      header: () => <span>Ownership</span>,
+      header: () => (
+        <CollapsibleHeader
+          title="Ownership"
+          clickHandler={() => toggleColsVisibility('ownership')}
+        />
+      ),
       columns: [
         columnHelper.accessor('tractOwner', {
           header: 'Owner',
@@ -108,7 +114,12 @@ export default function BasicTable() {
     }),
     columnHelper.group({
       id: 'conveyance',
-      header: () => <span>Conveyance Details</span>,
+      header: () => (
+        <CollapsibleHeader
+          title="Conveyance Details"
+          clickHandler={() => toggleColsVisibility('conveyance')}
+        />
+      ),
       columns: [
         columnHelper.accessor('instrumentType', {
           header: 'Instrument Type',
@@ -188,33 +199,30 @@ export default function BasicTable() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const locationColumns = useMemo(
-    () =>
-      table
+  const toggleColsVisibility = useCallback(
+    (groupId: string) => {
+      const groupColIds = table
         .getAllLeafColumns()
-        .filter(col => col.parent?.id === 'location')
-        .map(col => col.id),
+        .filter(col => col.parent?.id === groupId)
+        .map(col => col.id);
+
+      const updatedLocationColsState: any = {};
+      const currentColsState = table.getColumn(groupColIds[1]).getIsVisible()
+        ? 'visible'
+        : 'hidden';
+
+      if (currentColsState === 'hidden') {
+        groupColIds.forEach(id => (updatedLocationColsState[id] = true));
+      } else {
+        groupColIds
+          .slice(1)
+          .forEach(id => (updatedLocationColsState[id] = false));
+      }
+
+      setColumnVisibility(prev => ({ ...prev, ...updatedLocationColsState }));
+    },
     [table]
   );
-
-  const toggleLocationColumns = useCallback(() => {
-    const updatedLocationColsState: any = {};
-    const locationsColsState = table
-      .getColumn(locationColumns[1])
-      .getIsVisible()
-      ? 'visible'
-      : 'hidden';
-
-    if (locationsColsState === 'hidden') {
-      locationColumns.forEach(id => (updatedLocationColsState[id] = true));
-    } else {
-      locationColumns
-        .slice(1)
-        .forEach(id => (updatedLocationColsState[id] = false));
-    }
-
-    setColumnVisibility(prev => ({ ...prev, ...updatedLocationColsState }));
-  }, [locationColumns, table]);
 
   const theadContent = (
     <thead>
@@ -272,24 +280,14 @@ export default function BasicTable() {
     </tbody>
   );
 
+  useEffect(() => {
+    toggleColsVisibility('location');
+    toggleColsVisibility('conveyance');
+  }, [toggleColsVisibility]);
+
   return (
     <section className="py-3 px-4">
       <h2 className="font-bold text-2xl text-purple-900">Basic Table</h2>
-
-      <div className="mt-5">
-        <h3 className="font-semibold text-lg text-purple-900">
-          Column Visibility Controls
-        </h3>
-
-        <label>
-          <input
-            type="checkbox"
-            checked={table.getIsAllColumnsVisible()}
-            onChange={table.getToggleAllColumnsVisibilityHandler()}
-          />
-          Toggle All
-        </label>
-      </div>
 
       <div className="w-full overflow-auto max-h-[1000px]">
         <table className="mt-5 table-fixed">
