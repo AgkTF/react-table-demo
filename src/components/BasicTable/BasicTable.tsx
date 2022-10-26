@@ -4,8 +4,10 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { useState } from 'react';
 import { Tract } from '../../types';
 import { createTracts } from '../../utils';
+import { CollapsibleHeader } from '../CollapsibleHeader/CollapsibleHeader';
 
 const columnHelper = createColumnHelper<Tract>();
 const columns = [
@@ -25,7 +27,16 @@ const columns = [
   }),
   columnHelper.group({
     id: 'location',
-    header: () => <span>Location</span>,
+    // header: () => <span>Location</span>,
+    header: props => {
+      console.log(props);
+      const column = props.column;
+      const clickHandler = props.column.columns
+        .find(c => c.id === 'range')
+        ?.getToggleSortingHandler();
+      // const clickHandler = props.column.toggleVisibility;
+      return <CollapsibleHeader title="Location" column={column} />;
+    },
     columns: [
       columnHelper.accessor('basinShortName', {
         header: 'Basin',
@@ -165,11 +176,22 @@ const columns = [
 const data = createTracts(10);
 
 export default function BasicTable() {
+  const [columnVisibility, setColumnVisibility] = useState({});
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const locationColumns = table
+    .getAllLeafColumns()
+    .filter(col => col.parent?.id === 'location');
+  // console.log(locationColumns);
 
   const theadContent = (
     <thead>
@@ -187,8 +209,8 @@ export default function BasicTable() {
               <th
                 key={header.id}
                 colSpan={header.colSpan}
-                className={`py-1 whitespace-nowrap border border-gray-200 capitalize ${
-                  headerGroup.depth > 0 ? 'px-3' : 'px-2'
+                className={`py-1 whitespace-nowrap border border-gray-200 ${
+                  headerGroup.depth > 0 ? 'px-3 capitalize' : 'px-2'
                 }`}
               >
                 {header.isPlaceholder
@@ -229,13 +251,32 @@ export default function BasicTable() {
 
   return (
     <section className="py-3 px-4">
-      <h2 className="font-bold text-2xl text-gray-800">Basic Table</h2>
+      <h2 className="font-bold text-2xl text-purple-900">Basic Table</h2>
+
+      <div className="mt-5">
+        <h3 className="font-semibold text-lg text-purple-900">
+          Column Visibility Controls
+        </h3>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={table.getIsAllColumnsVisible()}
+            onChange={table.getToggleAllColumnsVisibilityHandler()}
+          />
+          Toggle All
+        </label>
+      </div>
 
       <div className="w-full overflow-auto max-h-[1000px]">
         <table className="mt-5 table-fixed">
           {theadContent}
           {tbodyContent}
         </table>
+      </div>
+
+      <div className="mt-4 text-xs text-slate-800">
+        <pre>{JSON.stringify(table.getState().columnVisibility, null, 2)}</pre>
       </div>
     </section>
   );
