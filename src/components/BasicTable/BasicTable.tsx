@@ -3,6 +3,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table';
 import { useCallback, useEffect, useState } from 'react';
 import { Tract } from '../../types';
@@ -32,16 +33,13 @@ export default function BasicTable() {
     }),
     columnHelper.group({
       id: 'location',
-      header: props => {
-        console.log(props);
-
-        return (
-          <CollapsibleHeader
-            title="Location"
-            clickHandler={() => toggleColsVisibility('location')}
-          />
-        );
-      },
+      header: () => (
+        <CollapsibleHeader
+          title="Location"
+          clickHandler={() => toggleColsVisibility('location')}
+          currentColsState={currentColsState('location')}
+        />
+      ),
       columns: [
         columnHelper.accessor('basinShortName', {
           header: 'Basin',
@@ -79,6 +77,7 @@ export default function BasicTable() {
         <CollapsibleHeader
           title="Ownership"
           clickHandler={() => toggleColsVisibility('ownership')}
+          currentColsState={currentColsState('ownership')}
         />
       ),
       columns: [
@@ -118,6 +117,7 @@ export default function BasicTable() {
         <CollapsibleHeader
           title="Conveyance Details"
           clickHandler={() => toggleColsVisibility('conveyance')}
+          currentColsState={currentColsState('conveyance')}
         />
       ),
       columns: [
@@ -199,6 +199,20 @@ export default function BasicTable() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const currentColsState = useCallback(
+    (groupId: string) => {
+      const groupColIds = table
+        .getAllLeafColumns()
+        .filter(col => col.parent?.id === groupId)
+        .map(col => col.id);
+
+      return table.getColumn(groupColIds[1]).getIsVisible()
+        ? 'visible'
+        : 'hidden';
+    },
+    [table]
+  );
+
   const toggleColsVisibility = useCallback(
     (groupId: string) => {
       const groupColIds = table
@@ -206,7 +220,7 @@ export default function BasicTable() {
         .filter(col => col.parent?.id === groupId)
         .map(col => col.id);
 
-      const updatedLocationColsState: any = {};
+      const updatedLocationColsState: VisibilityState = {};
       const currentColsState = table.getColumn(groupColIds[1]).getIsVisible()
         ? 'visible'
         : 'hidden';

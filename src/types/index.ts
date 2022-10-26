@@ -1,6 +1,5 @@
 export type InterestType = 'WI' | 'ORRI' | 'MI';
 export type InstrumentType = 'Oil&Gas Lease' | 'Assignment' | 'Mineral Deed';
-
 export type Tract = {
   id: string;
   tractNumber: number;
@@ -38,3 +37,4 @@ export type Tract = {
   sourceDealTract?: string;
   percentageOfTractDivested: number;
 };
+export type ColsGroupState = 'visible' | 'hidden';
