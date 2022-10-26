@@ -173,29 +173,52 @@ export default function BasicTable() {
 
   const theadContent = (
     <thead>
-      {table.getHeaderGroups().map(headerGroup => (
-        <tr key={headerGroup.id}>
-          {headerGroup.headers.map(header => (
-            <th key={header.id} colSpan={header.colSpan}>
-              {header.isPlaceholder
-                ? null
-                : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-            </th>
-          ))}
-        </tr>
-      ))}
+      {table.getHeaderGroups().map(headerGroup => {
+        return (
+          <tr
+            key={headerGroup.id}
+            className={`${
+              headerGroup.depth === 0
+                ? 'bg-[#4f477e] text-white uppercase'
+                : 'bg-[#b7b6c9] text-[#4f477e]'
+            }`}
+          >
+            {headerGroup.headers.map(header => (
+              <th
+                key={header.id}
+                colSpan={header.colSpan}
+                className={`py-1 whitespace-nowrap border border-gray-200 capitalize ${
+                  headerGroup.depth > 0 ? 'px-3' : 'px-2'
+                }`}
+              >
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+              </th>
+            ))}
+          </tr>
+        );
+      })}
     </thead>
   );
 
   const tbodyContent = (
     <tbody>
-      {table.getRowModel().rows.map(row => (
-        <tr key={row.id}>
+      {table.getRowModel().rows.map((row, i) => (
+        <tr
+          key={row.id}
+          className={`${
+            i % 2 === 0 ? 'bg-[#f5f6f7]' : 'bg-white'
+          } hover:bg-[#dddfe2]`}
+        >
           {row.getVisibleCells().map(cell => (
-            <td key={cell.id}>
+            <td
+              key={cell.id}
+              className="py-3 px-4 border border-gray-200 text-[14px] text-[#4a4a4a] whitespace-nowrap"
+            >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </td>
           ))}
@@ -205,13 +228,15 @@ export default function BasicTable() {
   );
 
   return (
-    <section className="container py-3 px-4">
+    <section className="py-3 px-4">
       <h2 className="font-bold text-2xl text-gray-800">Basic Table</h2>
 
-      <table>
-        {theadContent}
-        {tbodyContent}
-      </table>
+      <div className="w-full overflow-auto max-h-[1000px]">
+        <table className="mt-5 table-fixed">
+          {theadContent}
+          {tbodyContent}
+        </table>
+      </div>
     </section>
   );
 }
