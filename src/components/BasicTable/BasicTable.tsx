@@ -4,8 +4,9 @@ import {
   getCoreRowModel,
   useReactTable,
   VisibilityState,
+  ColumnDef,
 } from '@tanstack/react-table';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Tract } from '../../types';
 import { createTracts } from '../../utils';
 import { CollapsibleHeader } from '../CollapsibleHeader/CollapsibleHeader';
@@ -16,178 +17,185 @@ const data = createTracts(10);
 
 export default function BasicTable() {
   const [columnVisibility, setColumnVisibility] = useState({});
-  const columns = [
-    columnHelper.group({
-      id: 'tracts',
-      header: () => <span>Tracts</span>,
-      columns: [
-        columnHelper.accessor('tractNumber', {
-          header: '#',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('isActive', {
-          header: 'Status',
-          cell: info => (info.getValue() ? 'Active' : 'Inactive'),
-        }),
-      ],
-    }),
-    columnHelper.group({
-      id: 'location',
-      header: () => (
-        <CollapsibleHeader
-          title="Location"
-          clickHandler={() => toggleColsVisibility('location')}
-          currentColsState={currentColsState('location')}
-        />
-      ),
-      columns: [
-        columnHelper.accessor('basinShortName', {
-          header: 'Basin',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('stateShortName', {
-          header: 'State',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('countyName', {
-          header: 'County',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('township', {
-          header: 'TWN',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('range', {
-          header: 'Range',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('section', {
-          header: 'Section',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('legal', {
-          header: 'Legal',
-          cell: info => info.getValue(),
-        }),
-      ],
-    }),
-    columnHelper.group({
-      id: 'ownership',
-      header: () => (
-        <CollapsibleHeader
-          title="Ownership"
-          clickHandler={() => toggleColsVisibility('ownership')}
-          currentColsState={currentColsState('ownership')}
-        />
-      ),
-      columns: [
-        columnHelper.accessor('tractOwner', {
-          header: 'Owner',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('ownershipStatus', {
-          header: 'Ownership Status',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('interestType', {
-          header: 'Interest Type',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('grossAcres', {
-          header: 'Gross Acres',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('netAcres', {
-          header: 'Net Acres',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('deliveredNRI', {
-          header: 'Delivered NRI(%)',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('costPerAcre', {
-          header: 'Cost/Acres ($)',
-          cell: info => info.getValue(),
-        }),
-      ],
-    }),
-    columnHelper.group({
-      id: 'conveyance',
-      header: () => (
-        <CollapsibleHeader
-          title="Conveyance Details"
-          clickHandler={() => toggleColsVisibility('conveyance')}
-          currentColsState={currentColsState('conveyance')}
-        />
-      ),
-      columns: [
-        columnHelper.accessor('instrumentType', {
-          header: 'Instrument Type',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('assignorOrGrantor', {
-          header: 'Assignor/Grantor',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('assigneeOrGrantee', {
-          header: 'Assignee/Grantee',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('recordingNumber', {
-          header: 'Recording Number',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('recordingDate', {
-          header: 'Recording Date',
-          cell: info => {
-            const d = info.getValue();
-            return new Intl.DateTimeFormat('en-US').format(d);
-          },
-        }),
-        columnHelper.accessor('effectiveDate', {
-          header: 'Effective Date',
-          cell: info => {
-            const d = info.getValue();
-            return new Intl.DateTimeFormat('en-US').format(d);
-          },
-        }),
-        columnHelper.accessor('lessor', {
-          header: 'Lessor',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('lessee', {
-          header: 'Lessee',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('leaseRecordingNumber', {
-          header: 'Lease Recording Number',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('leaseRecordingDate', {
-          header: 'Lease Recording Date',
-          cell: info => {
-            const d = info.getValue();
-            return new Intl.DateTimeFormat('en-US').format(d);
-          },
-        }),
-        columnHelper.accessor('leaseEffectiveDate', {
-          header: 'Lease Effective Date',
-          cell: info => {
-            const d = info.getValue();
-            return new Intl.DateTimeFormat('en-US').format(d);
-          },
-        }),
-        columnHelper.accessor('leasePrimaryTerm', {
-          header: 'Primary Term',
-          cell: info => info.getValue(),
-        }),
-        columnHelper.accessor('leaseOptionTerm', {
-          header: 'Option Term',
-          cell: info => info.getValue(),
-        }),
-      ],
-    }),
-  ];
+  const columns = useMemo<ColumnDef<Tract>[]>(
+    () => [
+      columnHelper.group({
+        id: 'tracts',
+        header: () => <span>Tracts</span>,
+        columns: [
+          columnHelper.accessor('tractNumber', {
+            header: '#',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('isActive', {
+            header: 'Status',
+            cell: info => (info.getValue() ? 'Active' : 'Inactive'),
+          }),
+        ],
+      }),
+      columnHelper.group({
+        id: 'location',
+        header: () => (
+          <CollapsibleHeader
+            title="Location"
+            clickHandler={() => toggleColsVisibility('location')}
+            currentColsState={currentColsState('location')}
+          />
+        ),
+        columns: [
+          columnHelper.accessor('basinShortName', {
+            header: 'Basin',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('stateShortName', {
+            header: 'State',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('countyName', {
+            header: 'County',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('township', {
+            header: 'TWN',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('range', {
+            header: 'Range',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('section', {
+            header: 'Section',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('legal', {
+            header: 'Legal',
+            cell: info => (
+              <span className="pb-1 border border-x-0 border-t-0 border-dashed border-b-[#9b9b9b]">
+                {info.getValue()}
+              </span>
+            ),
+          }),
+        ],
+      }),
+      columnHelper.group({
+        id: 'ownership',
+        header: () => (
+          <CollapsibleHeader
+            title="Ownership"
+            clickHandler={() => toggleColsVisibility('ownership')}
+            currentColsState={currentColsState('ownership')}
+          />
+        ),
+        columns: [
+          columnHelper.accessor('tractOwner', {
+            header: 'Owner',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('ownershipStatus', {
+            header: 'Ownership Status',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('interestType', {
+            header: 'Interest Type',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('grossAcres', {
+            header: 'Gross Acres',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('netAcres', {
+            header: 'Net Acres',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('deliveredNRI', {
+            header: 'Delivered NRI(%)',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('costPerAcre', {
+            header: 'Cost/Acres ($)',
+            cell: info => info.getValue(),
+          }),
+        ],
+      }),
+      columnHelper.group({
+        id: 'conveyance',
+        header: () => (
+          <CollapsibleHeader
+            title="Conveyance Details"
+            clickHandler={() => toggleColsVisibility('conveyance')}
+            currentColsState={currentColsState('conveyance')}
+          />
+        ),
+        columns: [
+          columnHelper.accessor('instrumentType', {
+            header: 'Instrument Type',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('assignorOrGrantor', {
+            header: 'Assignor/Grantor',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('assigneeOrGrantee', {
+            header: 'Assignee/Grantee',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('recordingNumber', {
+            header: 'Recording Number',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('recordingDate', {
+            header: 'Recording Date',
+            cell: info => {
+              const d = info.getValue();
+              return new Intl.DateTimeFormat('en-US').format(d);
+            },
+          }),
+          columnHelper.accessor('effectiveDate', {
+            header: 'Effective Date',
+            cell: info => {
+              const d = info.getValue();
+              return new Intl.DateTimeFormat('en-US').format(d);
+            },
+          }),
+          columnHelper.accessor('lessor', {
+            header: 'Lessor',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('lessee', {
+            header: 'Lessee',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('leaseRecordingNumber', {
+            header: 'Lease Recording Number',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('leaseRecordingDate', {
+            header: 'Lease Recording Date',
+            cell: info => {
+              const d = info.getValue();
+              return new Intl.DateTimeFormat('en-US').format(d);
+            },
+          }),
+          columnHelper.accessor('leaseEffectiveDate', {
+            header: 'Lease Effective Date',
+            cell: info => {
+              const d = info.getValue();
+              return new Intl.DateTimeFormat('en-US').format(d);
+            },
+          }),
+          columnHelper.accessor('leasePrimaryTerm', {
+            header: 'Primary Term',
+            cell: info => info.getValue(),
+          }),
+          columnHelper.accessor('leaseOptionTerm', {
+            header: 'Option Term',
+            cell: info => info.getValue(),
+          }),
+        ],
+      }),
+    ],
+    []
+  );
 
   const table = useReactTable({
     data,
@@ -277,7 +285,7 @@ export default function BasicTable() {
       {table.getRowModel().rows.map((row, i) => (
         <tr
           key={row.id}
-          className={`${
+          className={`cursor-pointer ${
             i % 2 === 0 ? 'bg-[#f5f6f7]' : 'bg-white'
           } hover:bg-[#dddfe2]`}
         >
@@ -295,7 +303,7 @@ export default function BasicTable() {
   );
 
   useEffect(() => {
-    toggleColsVisibility('location');
+    toggleColsVisibility('ownership');
     toggleColsVisibility('conveyance');
   }, [toggleColsVisibility]);
 
