@@ -1,4 +1,4 @@
-import BasicTable from './components/BasicTable/BasicTable';
+import { BasicTable } from './tables';
 
 function App() {
   return <BasicTable />;

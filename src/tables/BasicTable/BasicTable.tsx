@@ -9,13 +9,13 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Tract } from '../../types';
 import { createTracts } from '../../utils';
-import { CollapsibleHeader } from '../CollapsibleHeader/CollapsibleHeader';
+import { CollapsibleHeader } from '../../components/CollapsibleHeader/CollapsibleHeader';
 
 const columnHelper = createColumnHelper<Tract>();
 
 const data = createTracts(10);
 
-export default function BasicTable() {
+export function BasicTable() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const columns = useMemo<ColumnDef<Tract>[]>(
     () => [
