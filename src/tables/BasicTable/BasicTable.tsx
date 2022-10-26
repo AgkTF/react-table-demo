@@ -70,9 +70,12 @@ export function BasicTable() {
           columnHelper.accessor('legal', {
             header: 'Legal',
             cell: info => (
-              <span className="pb-1 border border-x-0 border-t-0 border-dashed border-b-[#9b9b9b]">
-                {info.getValue()}
-              </span>
+              <input
+                type="text"
+                spellCheck="false"
+                value={info.getValue()}
+                className="p-0 bg-inherit text-inherit text-[14px] border border-x-0 border-t-0 border-dashed border-b-[#9b9b9b] truncate"
+              />
             ),
           }),
         ],
@@ -194,6 +197,7 @@ export function BasicTable() {
         ],
       }),
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
