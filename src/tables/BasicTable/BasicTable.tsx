@@ -5,25 +5,19 @@ import {
   useReactTable,
   VisibilityState,
   ColumnDef,
+  CellContext,
 } from '@tanstack/react-table';
-import {
-  LegacyRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SelectedCell, Tract } from '../../types';
 import { createTracts } from '../../utils';
 import { CollapsibleHeader } from '../../components/CollapsibleHeader/CollapsibleHeader';
+import { EditableInputField } from '../../components';
 
 const columnHelper = createColumnHelper<Tract>();
 
 const data = createTracts(10);
 
 export function BasicTable() {
-  const legalInputRef = useRef<any>(null);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [selectedCells, setSelectedCells] = useState<SelectedCell[]>([]);
   const columns = useMemo<ColumnDef<Tract>[]>(
@@ -78,15 +72,7 @@ export function BasicTable() {
           }),
           columnHelper.accessor('legal', {
             header: 'Legal',
-            cell: info => (
-              <input
-                type="text"
-                spellCheck="false"
-                value={info.getValue()}
-                className="p-0 bg-inherit text-inherit text-[14px] border border-x-0 border-t-0 border-dashed border-b-[#9b9b9b] truncate"
-                onChange={() => {}}
-              />
-            ),
+            cell: info => <EditableInputField info={info} />,
           }),
         ],
       }),
