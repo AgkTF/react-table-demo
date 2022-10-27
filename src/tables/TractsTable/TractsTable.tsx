@@ -351,7 +351,7 @@ export function BasicTable() {
 
   return (
     <section className="py-3 px-4">
-      <h2 className="font-bold text-2xl text-purple-900">Basic Table</h2>
+      <h2 className="font-bold text-2xl text-purple-900">Tracts Table</h2>
 
       <div className="w-full overflow-auto max-h-[1000px]">
         <table className="mt-5 table-fixed" ref={tableRef}>

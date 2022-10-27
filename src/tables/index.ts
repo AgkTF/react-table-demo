@@ -1,1 +1,1 @@
-export * from './BasicTable/BasicTable';
+export * from './TractsTable/TractsTable';
