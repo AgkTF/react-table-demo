@@ -27,7 +27,7 @@ export function EditableInputField({ info }: Props) {
       type="text"
       spellCheck="false"
       value={value}
-      className="p-0 bg-inherit text-inherit text-[14px] border border-x-0 border-t-0 border-dashed border-b-[#9b9b9b] truncate"
+      className="p-0 bg-inherit text-inherit text-[14px] border border-x-0 border-t-0 border-dashed border-b-[#9b9b9b] truncate w-full"
       onChange={e => setValue(e.target.value)}
     />
   );

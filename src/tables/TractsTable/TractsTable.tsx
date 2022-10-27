@@ -9,13 +9,18 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SelectedCell, Tract } from '../../types';
 import { createTracts } from '../../utils';
-import { CollapsibleHeader } from '../../components/CollapsibleHeader/CollapsibleHeader';
-import { EditableInputField } from '../../components';
+import {
+  EditableInputField,
+  JustTextCell,
+  CollapsibleHeader,
+} from '../../components';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 const columnHelper = createColumnHelper<Tract>();
 
-const data = createTracts(10);
+const data = createTracts(5);
+
+const MIN_WIDTH = 75;
 
 export function BasicTable() {
   const tableRef = useRef(null);
@@ -29,7 +34,7 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('tractNumber', {
             header: '#',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('isActive', {
             header: 'Status',
@@ -49,27 +54,27 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('basinShortName', {
             header: 'Basin',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('stateShortName', {
             header: 'State',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('countyName', {
             header: 'County',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('township', {
             header: 'TWN',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('range', {
             header: 'Range',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('section', {
             header: 'Section',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('legal', {
             header: 'Legal',
@@ -89,31 +94,33 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('tractOwner', {
             header: 'Owner',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('ownershipStatus', {
-            header: 'Ownership Status',
-            cell: info => info.getValue(),
+            header: ({ column }) => {
+              return <div className="truncate">Ownership Status</div>;
+            },
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('interestType', {
             header: 'Interest Type',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('grossAcres', {
             header: 'Gross Acres',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('netAcres', {
             header: 'Net Acres',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('deliveredNRI', {
             header: 'Delivered NRI(%)',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('costPerAcre', {
             header: 'Cost/Acres ($)',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
         ],
       }),
@@ -129,19 +136,19 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('instrumentType', {
             header: 'Instrument Type',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('assignorOrGrantor', {
             header: 'Assignor/Grantor',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('assigneeOrGrantee', {
             header: 'Assignee/Grantee',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('recordingNumber', {
             header: 'Recording Number',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('recordingDate', {
             header: 'Recording Date',
@@ -159,15 +166,15 @@ export function BasicTable() {
           }),
           columnHelper.accessor('lessor', {
             header: 'Lessor',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('lessee', {
             header: 'Lessee',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('leaseRecordingNumber', {
             header: 'Lease Recording Number',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('leaseRecordingDate', {
             header: 'Lease Recording Date',
@@ -185,11 +192,11 @@ export function BasicTable() {
           }),
           columnHelper.accessor('leasePrimaryTerm', {
             header: 'Primary Term',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('leaseOptionTerm', {
             header: 'Option Term',
-            cell: info => info.getValue(),
+            cell: info => <JustTextCell info={info} />,
           }),
         ],
       }),
@@ -204,6 +211,10 @@ export function BasicTable() {
     state: {
       columnVisibility,
     },
+    columnResizeMode: 'onChange',
+    // defaultColumn: {
+    //   minSize: MIN_WIDTH,
+    // },
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -276,7 +287,7 @@ export function BasicTable() {
         return (
           <tr
             key={headerGroup.id}
-            className={`${
+            className={` ${
               headerGroup.depth === 0
                 ? 'bg-[#4f477e] text-white uppercase'
                 : 'bg-[#b7b6c9] text-[#4f477e]'
@@ -286,9 +297,10 @@ export function BasicTable() {
               <th
                 key={header.id}
                 colSpan={header.colSpan}
-                className={`py-1 whitespace-nowrap border border-gray-200 ${
+                className={`relative py-1 border border-gray-200 group truncate ${
                   headerGroup.depth > 0 ? 'px-3 capitalize' : 'px-2'
                 }`}
+                style={{ minWidth: header.getSize(), maxWidth: MIN_WIDTH }}
               >
                 {header.isPlaceholder
                   ? null
@@ -296,6 +308,11 @@ export function BasicTable() {
                       header.column.columnDef.header,
                       header.getContext()
                     )}
+
+                <div
+                  className="absolute right-0 top-0 h-full w-1 bg-sky-500 cursor-col-resize select-none touch-none opacity-0 group-hover:opacity-100"
+                  onMouseDown={header.getResizeHandler()}
+                ></div>
               </th>
             ))}
           </tr>
@@ -309,7 +326,7 @@ export function BasicTable() {
       {table.getRowModel().rows.map((row, i) => (
         <tr
           key={row.id}
-          className={`cursor-pointer ${
+          className={`cursor-pointer truncate ${
             i % 2 === 0 ? 'bg-[#f5f6f7]' : 'bg-white'
           } hover:bg-[#dddfe2]`}
         >
@@ -320,11 +337,11 @@ export function BasicTable() {
             return (
               <td
                 key={cell.id}
-                className={`py-3 px-4 text-[14px] text-[#4a4a4a] whitespace-nowrap ${
+                className={`py-3 px-4 text-[14px] text-[#4a4a4a] ${
                   isCellSelected
                     ? 'border-2 border-sky-400'
                     : 'border border-gray-200'
-                } `}
+                }`}
                 onClick={() => {
                   updateSelectedCells(
                     {
@@ -333,6 +350,9 @@ export function BasicTable() {
                     },
                     'single'
                   );
+                }}
+                style={{
+                  maxWidth: MIN_WIDTH,
                 }}
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -344,24 +364,29 @@ export function BasicTable() {
     </tbody>
   );
 
-  useEffect(() => {
-    toggleColsVisibility('ownership');
-    toggleColsVisibility('conveyance');
-  }, [toggleColsVisibility]);
+  // TODO: fix this
+  // useEffect(() => {
+  //   toggleColsVisibility('ownership');
+  //   toggleColsVisibility('conveyance');
+  // }, [toggleColsVisibility]);
 
   return (
     <section className="py-3 px-4">
       <h2 className="font-bold text-2xl text-purple-900">Tracts Table</h2>
 
       <div className="w-full overflow-auto max-h-[1000px]">
-        <table className="mt-5 table-fixed" ref={tableRef}>
+        <table
+          className="mt-5 table-auto"
+          ref={tableRef}
+          style={{ width: table.getCenterTotalSize() }}
+        >
           {theadContent}
           {tbodyContent}
         </table>
       </div>
 
       <div className="mt-4 text-xs text-slate-800">
-        <pre>{JSON.stringify(table.getState().columnVisibility, null, 2)}</pre>
+        <pre>{JSON.stringify(table.getState().columnSizing, null, 2)}</pre>
       </div>
     </section>
   );

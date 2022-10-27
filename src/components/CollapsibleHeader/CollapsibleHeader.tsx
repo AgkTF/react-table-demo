@@ -15,10 +15,10 @@ export function CollapsibleHeader({
   return (
     <button
       type="button"
-      className="w-full flex items-center justify-center gap-2"
+      className="w-full flex items-center gap-2"
       onClick={clickHandler}
     >
-      <div className="bg-white rounded-sm flex items-center justify-center">
+      <div className="bg-white rounded-sm flex items-center justify-center ">
         {currentColsState === 'visible' ? (
           <MinusIcon className="h-3 w-3 text-[#4f477e]" />
         ) : (
@@ -26,7 +26,7 @@ export function CollapsibleHeader({
         )}
       </div>
 
-      <span>{title}</span>
+      <span className="mx-auto truncate">{title}</span>
     </button>
   );
 }
