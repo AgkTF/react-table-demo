@@ -13,6 +13,7 @@ import {
   EditableInputField,
   JustTextCell,
   CollapsibleHeader,
+  TractStatusCell,
 } from '../../components';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
@@ -38,7 +39,7 @@ export function BasicTable() {
           }),
           columnHelper.accessor('isActive', {
             header: 'Status',
-            cell: info => (info.getValue() ? 'Active' : 'Inactive'),
+            cell: info => <TractStatusCell info={info} />,
           }),
         ],
       }),
@@ -258,22 +259,22 @@ export function BasicTable() {
     [table]
   );
 
-  const updateSelectedCells = useCallback(
-    (newCell: SelectedCell, mode: 'single' | 'multi') => {
-      if (mode === 'single') {
-        setSelectedCells([newCell]);
-      } else {
-        setSelectedCells(prev => {
-          const isSelected = prev.find(c => c.cellId === newCell.cellId);
-          if (!isSelected) {
-            return [...prev, newCell];
-          }
-          return prev;
-        });
-      }
-    },
-    []
-  );
+  const updateSelectedCells = (
+    newCell: SelectedCell,
+    mode: 'single' | 'multi'
+  ) => {
+    if (mode === 'single') {
+      setSelectedCells([newCell]);
+    } else {
+      setSelectedCells(prev => {
+        const isSelected = prev.find(c => c.cellId === newCell.cellId);
+        if (!isSelected) {
+          return [...prev, newCell];
+        }
+        return prev;
+      });
+    }
+  };
 
   const resetSelectedCells = useCallback(() => {
     setSelectedCells([]);
@@ -376,7 +377,7 @@ export function BasicTable() {
 
       <div className="w-full overflow-auto max-h-[1000px]">
         <table
-          className="mt-5 table-auto"
+          className="mt-5"
           ref={tableRef}
           style={{ width: table.getCenterTotalSize() }}
         >
