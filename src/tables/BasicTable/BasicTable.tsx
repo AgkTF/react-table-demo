@@ -6,8 +6,15 @@ import {
   VisibilityState,
   ColumnDef,
 } from '@tanstack/react-table';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Tract } from '../../types';
+import {
+  LegacyRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { SelectedCell, Tract } from '../../types';
 import { createTracts } from '../../utils';
 import { CollapsibleHeader } from '../../components/CollapsibleHeader/CollapsibleHeader';
 
@@ -16,7 +23,9 @@ const columnHelper = createColumnHelper<Tract>();
 const data = createTracts(10);
 
 export function BasicTable() {
+  const legalInputRef = useRef<any>(null);
   const [columnVisibility, setColumnVisibility] = useState({});
+  const [selectedCells, setSelectedCells] = useState<SelectedCell[]>([]);
   const columns = useMemo<ColumnDef<Tract>[]>(
     () => [
       columnHelper.group({
@@ -75,6 +84,7 @@ export function BasicTable() {
                 spellCheck="false"
                 value={info.getValue()}
                 className="p-0 bg-inherit text-inherit text-[14px] border border-x-0 border-t-0 border-dashed border-b-[#9b9b9b] truncate"
+                onChange={() => {}}
               />
             ),
           }),
@@ -250,6 +260,23 @@ export function BasicTable() {
     [table]
   );
 
+  const updateSelectedCells = useCallback(
+    (newCell: SelectedCell, mode: 'single' | 'multi') => {
+      if (mode === 'single') {
+        setSelectedCells([newCell]);
+      } else {
+        setSelectedCells(prev => {
+          const isSelected = prev.find(c => c.cellId === newCell.cellId);
+          if (!isSelected) {
+            return [...prev, newCell];
+          }
+          return prev;
+        });
+      }
+    },
+    []
+  );
+
   const theadContent = (
     <thead>
       {table.getHeaderGroups().map(headerGroup => {
@@ -293,14 +320,32 @@ export function BasicTable() {
             i % 2 === 0 ? 'bg-[#f5f6f7]' : 'bg-white'
           } hover:bg-[#dddfe2]`}
         >
-          {row.getVisibleCells().map(cell => (
-            <td
-              key={cell.id}
-              className="py-3 px-4 border border-gray-200 text-[14px] text-[#4a4a4a] whitespace-nowrap"
-            >
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </td>
-          ))}
+          {row.getVisibleCells().map(cell => {
+            const isCellSelected = selectedCells.find(
+              c => c.cellId === cell.id
+            );
+            return (
+              <td
+                key={cell.id}
+                className={`py-3 px-4 text-[14px] text-[#4a4a4a] whitespace-nowrap ${
+                  isCellSelected
+                    ? 'border-2 border-sky-400'
+                    : 'border border-gray-200'
+                } `}
+                onClick={() => {
+                  updateSelectedCells(
+                    {
+                      cellData: cell.getValue(),
+                      cellId: cell.id,
+                    },
+                    'single'
+                  );
+                }}
+              >
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </td>
+            );
+          })}
         </tr>
       ))}
     </tbody>

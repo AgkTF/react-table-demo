@@ -38,3 +38,7 @@ export type Tract = {
   percentageOfTractDivested: number;
 };
 export type ColsGroupState = 'visible' | 'hidden';
+export type SelectedCell = {
+  cellId: string;
+  cellData: unknown;
+};
