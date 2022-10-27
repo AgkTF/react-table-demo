@@ -5,19 +5,20 @@ import {
   useReactTable,
   VisibilityState,
   ColumnDef,
-  CellContext,
 } from '@tanstack/react-table';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SelectedCell, Tract } from '../../types';
 import { createTracts } from '../../utils';
 import { CollapsibleHeader } from '../../components/CollapsibleHeader/CollapsibleHeader';
 import { EditableInputField } from '../../components';
+import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 const columnHelper = createColumnHelper<Tract>();
 
 const data = createTracts(10);
 
 export function BasicTable() {
+  const tableRef = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [selectedCells, setSelectedCells] = useState<SelectedCell[]>([]);
   const columns = useMemo<ColumnDef<Tract>[]>(
@@ -263,6 +264,12 @@ export function BasicTable() {
     []
   );
 
+  const resetSelectedCells = useCallback(() => {
+    setSelectedCells([]);
+  }, []);
+
+  useOnClickOutside(tableRef, resetSelectedCells);
+
   const theadContent = (
     <thead>
       {table.getHeaderGroups().map(headerGroup => {
@@ -347,7 +354,7 @@ export function BasicTable() {
       <h2 className="font-bold text-2xl text-purple-900">Basic Table</h2>
 
       <div className="w-full overflow-auto max-h-[1000px]">
-        <table className="mt-5 table-fixed">
+        <table className="mt-5 table-fixed" ref={tableRef}>
           {theadContent}
           {tbodyContent}
         </table>
