@@ -17,6 +17,7 @@ import {
   CollapsibleHeader,
   TractStatusCell,
   SubHeader,
+  JustTextHeader,
 } from '../../components';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { MIN_WIDTH } from '../../constants';
@@ -34,7 +35,7 @@ export function BasicTable() {
     () => [
       columnHelper.group({
         id: 'tracts',
-        header: () => <span>Tracts</span>,
+        header: () => <JustTextHeader title="tracts" />,
         enableResizing: false,
         columns: [
           columnHelper.accessor('tractNumber', {
@@ -43,7 +44,7 @@ export function BasicTable() {
             size: 75,
           }),
           columnHelper.accessor('isActive', {
-            header: 'Status',
+            header: () => <JustTextHeader title="status" />,
             cell: info => <TractStatusCell info={info} />,
             size: 80,
             enableSorting: false,
@@ -305,15 +306,28 @@ export function BasicTable() {
             className={` ${
               headerGroup.depth === 0
                 ? 'bg-[#4f477e] text-white uppercase'
-                : 'bg-[#b7b6c9] text-[#4f477e]'
+                : 'bg-[#b7b6c9] text-[#4f477e] capitalize'
             }`}
           >
             {headerGroup.headers.map(header => (
-              <SubHeader
+              <th
                 key={header.id}
-                headerGroup={headerGroup}
-                header={header}
-              />
+                colSpan={header.colSpan}
+                className={`relative py-1 border border-gray-200 group truncate ${
+                  headerGroup.depth > 0 ? 'px-3' : 'px-2'
+                } ${
+                  header.column.getCanSort() ? 'cursor-pointer select-none' : ''
+                }`}
+                onClick={header.column.getToggleSortingHandler()}
+                style={{ minWidth: header.getSize(), maxWidth: MIN_WIDTH }}
+              >
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+              </th>
             ))}
           </tr>
         );
@@ -364,7 +378,7 @@ export function BasicTable() {
     </tbody>
   );
 
-  // TODO: fix this
+  // FIXME:
   // useEffect(() => {
   //   toggleColsVisibility('ownership');
   //   toggleColsVisibility('conveyance');
