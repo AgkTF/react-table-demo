@@ -90,6 +90,7 @@ export function BasicTable() {
             header: 'Legal',
             cell: info => <EditableInputField info={info} />,
             enableSorting: false,
+            size: 130,
           }),
         ],
       }),
@@ -107,6 +108,7 @@ export function BasicTable() {
           columnHelper.accessor('tractOwner', {
             header: 'Owner',
             cell: info => <JustTextCell info={info} />,
+            size: 140,
           }),
           columnHelper.accessor('ownershipStatus', {
             header: 'Ownership Status',
@@ -152,10 +154,12 @@ export function BasicTable() {
           columnHelper.accessor('assignorOrGrantor', {
             header: 'Assignor/Grantor',
             cell: info => <JustTextCell info={info} />,
+            size: 200,
           }),
           columnHelper.accessor('assigneeOrGrantee', {
             header: 'Assignee/Grantee',
             cell: info => <JustTextCell info={info} />,
+            size: 140,
           }),
           columnHelper.accessor('recordingNumber', {
             header: 'Recording Number',
@@ -178,10 +182,12 @@ export function BasicTable() {
           columnHelper.accessor('lessor', {
             header: 'Lessor',
             cell: info => <JustTextCell info={info} />,
+            size: 120,
           }),
           columnHelper.accessor('lessee', {
             header: 'Lessee',
             cell: info => <JustTextCell info={info} />,
+            size: 120,
           }),
           columnHelper.accessor('leaseRecordingNumber', {
             header: 'lease recording number',
@@ -226,6 +232,7 @@ export function BasicTable() {
     columnResizeMode: 'onChange',
     defaultColumn: {
       minSize: MIN_WIDTH,
+      size: 90,
     },
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
@@ -301,14 +308,17 @@ export function BasicTable() {
         return headerGroup.depth === 0 ? (
           <tr
             key={headerGroup.id}
-            className="bg-[#4f477e] text-white uppercase"
+            className="bg-[#4f477e] text-white uppercase text-sm"
           >
             {headerGroup.headers.map(header => (
               <th
                 key={header.id}
                 colSpan={header.colSpan}
-                className={`px-2 relative py-1 border border-gray-200 group truncate`}
-                style={{ minWidth: header.getSize(), maxWidth: MIN_WIDTH }}
+                className={`py-1 px-3 relative border border-gray-200 group truncate`}
+                style={{
+                  minWidth: header.getSize(),
+                  maxWidth: MIN_WIDTH,
+                }}
               >
                 {header.isPlaceholder
                   ? null
@@ -322,17 +332,20 @@ export function BasicTable() {
         ) : (
           <tr
             key={headerGroup.id}
-            className="bg-[#b7b6c9] text-[#4f477e] capitalize"
+            className="bg-[#b7b6c9] text-[#4f477e] capitalize text-sm"
           >
             {headerGroup.headers.map(header => (
               <th
                 key={header.id}
                 colSpan={header.colSpan}
-                className={`px-3 relative py-1 border border-gray-200 group truncate ${
+                className={`py-2 px-3 relative border border-gray-200 group truncate ${
                   header.column.getCanSort() ? 'cursor-pointer select-none' : ''
                 }`}
                 onClick={header.column.getToggleSortingHandler()}
-                style={{ minWidth: header.getSize(), maxWidth: MIN_WIDTH }}
+                style={{
+                  minWidth: header.getSize(),
+                  maxWidth: MIN_WIDTH,
+                }}
               >
                 {header.isPlaceholder ? null : <SubHeader header={header} />}
               </th>
@@ -359,7 +372,7 @@ export function BasicTable() {
             return (
               <td
                 key={cell.id}
-                className={`py-3 px-4 text-[14px] text-[#4a4a4a] ${
+                className={`p-3 text-[13px] text-[#4a4a4a] ${
                   isCellSelected
                     ? 'border-2 border-sky-400'
                     : 'border border-gray-200'
@@ -407,7 +420,7 @@ export function BasicTable() {
         </table>
       </div>
 
-      <div className="mt-4 text-xs text-slate-800">
+      <div className="mt-5 text-xs text-slate-800 flex items-start gap-20">
         <pre>{JSON.stringify(table.getState().columnSizing, null, 2)}</pre>
         <pre>{JSON.stringify(table.getState().sorting, null, 2)}</pre>
       </div>
