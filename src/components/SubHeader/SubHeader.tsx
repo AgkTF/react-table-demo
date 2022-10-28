@@ -25,15 +25,19 @@ export function SubHeader({ headerGroup, header }: Props) {
             : flexRender(header.column.columnDef.header, header.getContext())}
 
           {{
-            asc: <ArrowLongUpIcon className="h-4 w-4 text-inherit" />,
-            desc: <ArrowLongDownIcon className="h-4 w-4 text-inherit" />,
+            asc: <ArrowLongUpIcon className="h-4 w-4 text-inherit shrink-0" />,
+            desc: (
+              <ArrowLongDownIcon className="h-4 w-4 text-inherit shrink-0" />
+            ),
           }[header.column.getIsSorted() as string] ?? null}
         </div>
 
-        <div
-          className="absolute right-0 top-0 h-full w-1 bg-sky-500 cursor-col-resize select-none touch-none opacity-0 group-hover:opacity-100"
-          onMouseDown={header.getResizeHandler()}
-        ></div>
+        {header.column.getCanResize() ? (
+          <div
+            className="absolute right-0 top-0 h-full w-1 bg-sky-500 cursor-col-resize select-none touch-none opacity-0 group-hover:opacity-100"
+            onMouseDown={header.getResizeHandler()}
+          ></div>
+        ) : null}
       </>
     </th>
   );

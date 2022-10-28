@@ -35,6 +35,7 @@ export function BasicTable() {
       columnHelper.group({
         id: 'tracts',
         header: () => <span>Tracts</span>,
+        enableResizing: false,
         columns: [
           columnHelper.accessor('tractNumber', {
             header: '#',
@@ -58,6 +59,7 @@ export function BasicTable() {
             currentColsState={currentColsState('location')}
           />
         ),
+        enableResizing: false,
         columns: [
           columnHelper.accessor('basinShortName', {
             header: 'Basin',
@@ -99,6 +101,7 @@ export function BasicTable() {
             currentColsState={currentColsState('ownership')}
           />
         ),
+        enableResizing: false,
         columns: [
           columnHelper.accessor('tractOwner', {
             header: 'Owner',
@@ -141,6 +144,7 @@ export function BasicTable() {
             currentColsState={currentColsState('conveyance')}
           />
         ),
+        enableResizing: false,
         columns: [
           columnHelper.accessor('instrumentType', {
             header: 'Instrument Type',

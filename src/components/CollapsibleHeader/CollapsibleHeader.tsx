@@ -15,7 +15,7 @@ export function CollapsibleHeader({
   return (
     <button
       type="button"
-      className="w-full flex items-center gap-2"
+      className="w-full flex items-center gap-2 uppercase"
       onClick={clickHandler}
     >
       <div className="bg-white rounded-sm flex items-center justify-center ">
