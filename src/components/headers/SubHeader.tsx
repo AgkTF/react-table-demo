@@ -1,18 +1,18 @@
-import { Header, flexRender } from '@tanstack/react-table';
+import { Header } from '@tanstack/react-table';
 import { Tract } from '../../types';
 import { ArrowLongUpIcon, ArrowLongDownIcon } from '@heroicons/react/20/solid';
+import { JustTextHeader } from './JustTextHeader';
 
 type Props = {
   header: Header<Tract, unknown>;
+  title: string;
 };
 
-export function SubHeader({ header }: Props) {
+export function SubHeader({ header, title }: Props) {
   return (
     <>
       <div className="flex items-center justify-center gap-1">
-        {header.isPlaceholder
-          ? null
-          : flexRender(header.column.columnDef.header, header.getContext())}
+        <JustTextHeader title={title} />
 
         {{
           asc: <ArrowLongUpIcon className="h-4 w-4 text-inherit shrink-0" />,

@@ -39,12 +39,14 @@ export function BasicTable() {
         enableResizing: false,
         columns: [
           columnHelper.accessor('tractNumber', {
-            header: '#',
+            header: ({ header }) => <SubHeader header={header} title="#" />,
             cell: info => <JustTextCell info={info} />,
             size: 75,
           }),
           columnHelper.accessor('isActive', {
-            header: () => <JustTextHeader title="status" />,
+            header: ({ header }) => (
+              <SubHeader header={header} title="status" />
+            ),
             cell: info => <TractStatusCell info={info} />,
             size: 80,
             enableSorting: false,
@@ -186,7 +188,9 @@ export function BasicTable() {
             cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('leaseRecordingNumber', {
-            header: 'Lease Recording Number',
+            header: ({ header }) => (
+              <SubHeader header={header} title="lease recording number" />
+            ),
             cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('leaseRecordingDate', {
