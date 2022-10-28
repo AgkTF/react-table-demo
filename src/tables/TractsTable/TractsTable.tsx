@@ -86,6 +86,7 @@ export function BasicTable() {
           columnHelper.accessor('legal', {
             header: 'Legal',
             cell: info => <EditableInputField info={info} />,
+            enableSorting: false,
           }),
         ],
       }),
@@ -226,6 +227,7 @@ export function BasicTable() {
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
   });
 
   const currentColsState = useCallback(
