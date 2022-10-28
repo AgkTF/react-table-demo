@@ -39,14 +39,12 @@ export function BasicTable() {
         enableResizing: false,
         columns: [
           columnHelper.accessor('tractNumber', {
-            header: ({ header }) => <SubHeader header={header} title="#" />,
+            header: '#',
             cell: info => <JustTextCell info={info} />,
             size: 75,
           }),
           columnHelper.accessor('isActive', {
-            header: ({ header }) => (
-              <SubHeader header={header} title="status" />
-            ),
+            header: 'status',
             cell: info => <TractStatusCell info={info} />,
             size: 80,
             enableSorting: false,
@@ -111,9 +109,7 @@ export function BasicTable() {
             cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('ownershipStatus', {
-            header: ({ column }) => {
-              return <div className="truncate">Ownership Status</div>;
-            },
+            header: 'Ownership Status',
             cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('interestType', {
@@ -188,9 +184,7 @@ export function BasicTable() {
             cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('leaseRecordingNumber', {
-            header: ({ header }) => (
-              <SubHeader header={header} title="lease recording number" />
-            ),
+            header: 'lease recording number',
             cell: info => <JustTextCell info={info} />,
           }),
           columnHelper.accessor('leaseRecordingDate', {
@@ -304,25 +298,16 @@ export function BasicTable() {
   const theadContent = (
     <thead>
       {table.getHeaderGroups().map(headerGroup => {
-        return (
+        return headerGroup.depth === 0 ? (
           <tr
             key={headerGroup.id}
-            className={` ${
-              headerGroup.depth === 0
-                ? 'bg-[#4f477e] text-white uppercase'
-                : 'bg-[#b7b6c9] text-[#4f477e] capitalize'
-            }`}
+            className="bg-[#4f477e] text-white uppercase"
           >
             {headerGroup.headers.map(header => (
               <th
                 key={header.id}
                 colSpan={header.colSpan}
-                className={`relative py-1 border border-gray-200 group truncate ${
-                  headerGroup.depth > 0 ? 'px-3' : 'px-2'
-                } ${
-                  header.column.getCanSort() ? 'cursor-pointer select-none' : ''
-                }`}
-                onClick={header.column.getToggleSortingHandler()}
+                className={`px-2 relative py-1 border border-gray-200 group truncate`}
                 style={{ minWidth: header.getSize(), maxWidth: MIN_WIDTH }}
               >
                 {header.isPlaceholder
@@ -331,6 +316,25 @@ export function BasicTable() {
                       header.column.columnDef.header,
                       header.getContext()
                     )}
+              </th>
+            ))}
+          </tr>
+        ) : (
+          <tr
+            key={headerGroup.id}
+            className="bg-[#b7b6c9] text-[#4f477e] capitalize"
+          >
+            {headerGroup.headers.map(header => (
+              <th
+                key={header.id}
+                colSpan={header.colSpan}
+                className={`px-3 relative py-1 border border-gray-200 group truncate ${
+                  header.column.getCanSort() ? 'cursor-pointer select-none' : ''
+                }`}
+                onClick={header.column.getToggleSortingHandler()}
+                style={{ minWidth: header.getSize(), maxWidth: MIN_WIDTH }}
+              >
+                {header.isPlaceholder ? null : <SubHeader header={header} />}
               </th>
             ))}
           </tr>

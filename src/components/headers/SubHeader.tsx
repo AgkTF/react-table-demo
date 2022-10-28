@@ -5,14 +5,13 @@ import { JustTextHeader } from './JustTextHeader';
 
 type Props = {
   header: Header<Tract, unknown>;
-  title: string;
 };
 
-export function SubHeader({ header, title }: Props) {
+export function SubHeader({ header }: Props) {
   return (
     <>
       <div className="flex items-center justify-center gap-1">
-        <JustTextHeader title={title} />
+        <JustTextHeader title={header.column.columnDef.header as string} />
 
         {{
           asc: <ArrowLongUpIcon className="h-4 w-4 text-inherit shrink-0" />,
