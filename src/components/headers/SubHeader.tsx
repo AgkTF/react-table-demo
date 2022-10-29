@@ -10,7 +10,11 @@ type Props = {
 export function SubHeader({ header }: Props) {
   return (
     <>
-      <div className="flex items-center justify-center gap-1">
+      <div
+        className={`flex items-center justify-center gap-1 ${
+          header.column.getCanSort() ? 'cursor-pointer' : ''
+        }`}
+      >
         <JustTextHeader title={header.column.columnDef.header as string} />
 
         {{

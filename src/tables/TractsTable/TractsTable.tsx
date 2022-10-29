@@ -7,6 +7,7 @@ import {
   ColumnDef,
   getSortedRowModel,
   SortingState,
+  HeaderGroup,
 } from '@tanstack/react-table';
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { SelectedCell, Tract } from '../../types';
@@ -21,6 +22,7 @@ import {
 } from '../../components';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { MIN_WIDTH } from '../../constants';
+import cn from 'classnames';
 
 const columnHelper = createColumnHelper<Tract>();
 
@@ -31,6 +33,7 @@ export function BasicTable() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedCells, setSelectedCells] = useState<SelectedCell[]>([]);
+
   const columns = useMemo<ColumnDef<Tract>[]>(
     () => [
       columnHelper.group({
@@ -228,6 +231,9 @@ export function BasicTable() {
     state: {
       columnVisibility,
       sorting,
+      columnPinning: {
+        left: ['tractNumber', 'isActive'],
+      },
     },
     columnResizeMode: 'onChange',
     defaultColumn: {
@@ -302,6 +308,48 @@ export function BasicTable() {
 
   useOnClickOutside(tableRef, resetSelectedCells);
 
+  // const leftPinnedHeaderGroups = useMemo(
+  //   () => table.getLeftHeaderGroups(),
+  //   [table]
+  // );
+  // console.log('left pinned header groups', leftPinnedHeaderGroups);
+
+  const pinnedColsWidth = (headerGroup: HeaderGroup<Tract>) => {
+    return headerGroup.headers.map(header => header.getSize());
+  };
+
+  const colsOffsets = (colWidths: number[]) => {
+    const offsets: number[] = [0, colWidths[0]];
+    colWidths.forEach((col, i) => {
+      if (i > 1) {
+        const sliced = colWidths.slice(0, i);
+        const offset = sliced.reduce((prev, curr) => prev + curr);
+        offsets.push(offset);
+      }
+    });
+
+    return offsets;
+  };
+
+  const pinnedColsLeftValues = useMemo(() => {
+    const leftPinnedHeaderGroups = table.getLeftHeaderGroups();
+
+    const mainHeadersWidth = pinnedColsWidth(leftPinnedHeaderGroups[0]);
+    // console.log('mainHeadersWidth', mainHeadersWidth);
+
+    const subHeadersWidth = pinnedColsWidth(leftPinnedHeaderGroups[1]);
+
+    const mainHeadersOffsets = colsOffsets(mainHeadersWidth);
+    const subHeadersOffsets = colsOffsets(subHeadersWidth);
+
+    return {
+      mainHeadersOffsets,
+      subHeadersOffsets,
+    };
+  }, []);
+
+  console.log('pinnedColsLeftValues', pinnedColsLeftValues);
+
   const theadContent = (
     <thead>
       {table.getHeaderGroups().map(headerGroup => {
@@ -310,46 +358,72 @@ export function BasicTable() {
             key={headerGroup.id}
             className="bg-[#4f477e] text-white uppercase text-sm"
           >
-            {headerGroup.headers.map(header => (
-              <th
-                key={header.id}
-                colSpan={header.colSpan}
-                className={`py-1 px-3 relative border border-gray-200 group truncate`}
-                style={{
-                  minWidth: header.getSize(),
-                  maxWidth: MIN_WIDTH,
-                }}
-              >
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-              </th>
-            ))}
+            {headerGroup.headers.map(header => {
+              const headerClasses = cn(
+                'py-1 px-3 relative border border-gray-200 group truncate',
+                {
+                  sticky: header.column.getIsPinned() === 'left',
+                  'bg-[#2f256a]': header.column.getIsPinned() === 'left',
+                }
+              );
+              return (
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className={headerClasses}
+                  style={{
+                    minWidth: header.getSize(),
+                    maxWidth: MIN_WIDTH,
+                    left:
+                      header.column.getIsPinned() === 'left'
+                        ? pinnedColsLeftValues.mainHeadersOffsets[header.index]
+                        : undefined,
+                  }}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </th>
+              );
+            })}
           </tr>
         ) : (
+          // ! sub-headers
           <tr
             key={headerGroup.id}
             className="bg-[#b7b6c9] text-[#4f477e] capitalize text-sm"
           >
-            {headerGroup.headers.map(header => (
-              <th
-                key={header.id}
-                colSpan={header.colSpan}
-                className={`py-2 px-3 relative border border-gray-200 group truncate ${
-                  header.column.getCanSort() ? 'cursor-pointer select-none' : ''
-                }`}
-                onClick={header.column.getToggleSortingHandler()}
-                style={{
-                  minWidth: header.getSize(),
-                  maxWidth: MIN_WIDTH,
-                }}
-              >
-                {header.isPlaceholder ? null : <SubHeader header={header} />}
-              </th>
-            ))}
+            {headerGroup.headers.map(header => {
+              const subHeaderClasses = cn(
+                'py-2 px-3 relative border border-gray-200 group truncate',
+                {
+                  'sticky bg-[#b7b6c9] text-[#4f477e] z-10':
+                    header.column.getIsPinned() === 'left',
+                }
+              );
+
+              return (
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className={subHeaderClasses}
+                  onClick={header.column.getToggleSortingHandler()}
+                  style={{
+                    minWidth: header.getSize(),
+                    maxWidth: MIN_WIDTH,
+                    left:
+                      header.column.getIsPinned() === 'left'
+                        ? pinnedColsLeftValues.subHeadersOffsets[header.index]
+                        : undefined,
+                  }}
+                >
+                  {header.isPlaceholder ? null : <SubHeader header={header} />}
+                </th>
+              );
+            })}
           </tr>
         );
       })}
@@ -358,44 +432,56 @@ export function BasicTable() {
 
   const tbodyContent = (
     <tbody>
-      {table.getRowModel().rows.map((row, i) => (
-        <tr
-          key={row.id}
-          className={`cursor-pointer truncate ${
-            i % 2 === 0 ? 'bg-[#f5f6f7]' : 'bg-white'
-          } hover:bg-[#dddfe2]`}
-        >
-          {row.getVisibleCells().map(cell => {
-            const isCellSelected = selectedCells.find(
-              c => c.cellId === cell.id
-            );
-            return (
-              <td
-                key={cell.id}
-                className={`p-3 text-[13px] text-[#4a4a4a] ${
-                  isCellSelected
-                    ? 'border-2 border-sky-400'
-                    : 'border border-gray-200'
-                }`}
-                onClick={() => {
-                  updateSelectedCells(
-                    {
-                      cellData: cell.getValue(),
-                      cellId: cell.id,
-                    },
-                    'single'
-                  );
-                }}
-                style={{
-                  maxWidth: MIN_WIDTH,
-                }}
-              >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            );
-          })}
-        </tr>
-      ))}
+      {table.getRowModel().rows.map((row, i) => {
+        const rowClasses = cn('cursor-pointer truncate hover:bg-[#dddfe2]', {
+          'bg-[#f5f6f7]': i % 2 === 0,
+          'bg-white': i % 2 !== 0,
+        });
+        return (
+          <tr key={row.id} className={rowClasses}>
+            {row.getVisibleCells().map(cell => {
+              const isCellSelected = selectedCells.find(
+                c => c.cellId === cell.id
+              );
+
+              const cellClasses = cn('p-3 text-[13px] text-[#4a4a4a]', {
+                'border-2 border-sky-400': isCellSelected,
+                'border border-gray-200': !isCellSelected,
+                sticky: cell.column.getIsPinned() === 'left',
+                'z-10': cell.column.getIsPinned() === 'left',
+                'bg-[#f5f6f7]': i % 2 === 0,
+                'bg-white': i % 2 !== 0,
+              });
+              return (
+                <td
+                  key={cell.id}
+                  className={cellClasses}
+                  onClick={() => {
+                    updateSelectedCells(
+                      {
+                        cellData: cell.getValue(),
+                        cellId: cell.id,
+                      },
+                      'single'
+                    );
+                  }}
+                  style={{
+                    maxWidth: MIN_WIDTH,
+                    left:
+                      cell.column.getIsPinned() === 'left'
+                        ? pinnedColsLeftValues.subHeadersOffsets[
+                            cell.column.getPinnedIndex()
+                          ]
+                        : undefined,
+                  }}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              );
+            })}
+          </tr>
+        );
+      })}
     </tbody>
   );
 
@@ -409,7 +495,7 @@ export function BasicTable() {
     <section className="py-3 px-4">
       <h2 className="font-bold text-2xl text-purple-900">Tracts Table</h2>
 
-      <div className="w-full overflow-auto max-h-[1000px]">
+      <div className="w-full overflow-auto max-h-[1000px] relative">
         <table
           className="mt-5"
           ref={tableRef}
@@ -421,8 +507,18 @@ export function BasicTable() {
       </div>
 
       <div className="mt-5 text-xs text-slate-800 flex items-start gap-20">
-        <pre>{JSON.stringify(table.getState().columnSizing, null, 2)}</pre>
-        <pre>{JSON.stringify(table.getState().sorting, null, 2)}</pre>
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">columnSizing</h4>
+          <pre>{JSON.stringify(table.getState().columnSizing, null, 2)}</pre>
+        </div>
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">sorting</h4>
+          <pre>{JSON.stringify(table.getState().sorting, null, 2)}</pre>
+        </div>
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">columnPinning</h4>
+          <pre>{JSON.stringify(table.getState().columnPinning, null, 2)}</pre>
+        </div>
       </div>
     </section>
   );
