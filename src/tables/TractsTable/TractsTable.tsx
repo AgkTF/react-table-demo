@@ -510,7 +510,7 @@ export function BasicTable() {
   }, [setColumnVisibilityState]);
 
   return (
-    <section className="py-3 px-4">
+    <>
       <h2 className="font-bold text-2xl text-purple-900">Tracts Table</h2>
 
       <div className="w-full overflow-auto max-h-[1000px] relative">
@@ -547,6 +547,6 @@ export function BasicTable() {
           <pre>{JSON.stringify(table.getState().columnPinning, null, 2)}</pre>
         </div>
       </div>
-    </section>
+    </>
   );
 }
