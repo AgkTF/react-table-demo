@@ -46,3 +46,4 @@ export type OffsetValues = {
   mainHeadersOffsets: number[];
   subHeadersOffsets: number[];
 };
+export type ColVisibilityState = 'visible' | 'hidden';

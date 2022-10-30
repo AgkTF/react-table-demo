@@ -9,7 +9,12 @@ import {
   SortingState,
 } from '@tanstack/react-table';
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { OffsetValues, SelectedCell, Tract } from '../../types';
+import {
+  ColVisibilityState,
+  OffsetValues,
+  SelectedCell,
+  Tract,
+} from '../../types';
 import { createTracts } from '../../utils';
 import {
   EditableInputField,
@@ -34,7 +39,7 @@ const data = createTracts(5);
 
 export function BasicTable() {
   const tableRef = useRef(null);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedCells, setSelectedCells] = useState<SelectedCell[]>([]);
 
@@ -274,11 +279,34 @@ export function BasicTable() {
         .map(col => col.id);
 
       const updatedLocationColsState: VisibilityState = {};
-      const currentColsState = table.getColumn(groupColIds[1]).getIsVisible()
+      const currentColsState: ColVisibilityState = table
+        .getColumn(groupColIds[1])
+        .getIsVisible()
         ? 'visible'
         : 'hidden';
 
       if (currentColsState === 'hidden') {
+        groupColIds.forEach(id => (updatedLocationColsState[id] = true));
+      } else {
+        groupColIds
+          .slice(1)
+          .forEach(id => (updatedLocationColsState[id] = false));
+      }
+
+      setColumnVisibility(prev => ({ ...prev, ...updatedLocationColsState }));
+    },
+    [table]
+  );
+
+  const setColumnVisibilityState = useCallback(
+    (groupId: string, newState: ColVisibilityState) => {
+      const groupColIds = table
+        .getAllLeafColumns()
+        .filter(col => col.parent?.id === groupId)
+        .map(col => col.id);
+
+      const updatedLocationColsState: VisibilityState = {};
+      if (newState === 'visible') {
         groupColIds.forEach(id => (updatedLocationColsState[id] = true));
       } else {
         groupColIds
@@ -450,10 +478,10 @@ export function BasicTable() {
   );
 
   // FIXME:
-  // useEffect(() => {
-  //   toggleColsVisibility('ownership');
-  //   toggleColsVisibility('conveyance');
-  // }, [toggleColsVisibility]);
+  useEffect(() => {
+    setColumnVisibilityState('ownership', 'hidden');
+    setColumnVisibilityState('location', 'hidden');
+  }, [setColumnVisibilityState]);
 
   return (
     <section className="py-3 px-4">
