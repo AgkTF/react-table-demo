@@ -1,10 +1,9 @@
 import { CellContext } from '@tanstack/react-table';
-import { Tract } from '../../types';
 
-type Props = {
-  info: CellContext<Tract, any>;
+type Props<T> = {
+  info: CellContext<T, any>;
 };
 
-export function JustTextCell({ info }: Props) {
+export function JustTextCell<T>({ info }: Props<T>) {
   return <div className="text-center truncate">{info.getValue()}</div>;
 }

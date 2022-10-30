@@ -24,7 +24,7 @@ import {
   SubHeader,
   JustTextHeader,
 } from '../../components';
-import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import { useOnClickOutside } from '../../hooks';
 import { MIN_WIDTH } from '../../constants';
 import cn from 'classnames';
 import ActionsCell from '../../components/ActionsCell/ActionsCell';
@@ -53,7 +53,7 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('tractNumber', {
             header: '#',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
             size: 75,
             enableResizing: false,
           }),
@@ -79,27 +79,27 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('basinShortName', {
             header: 'Basin',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('stateShortName', {
             header: 'State',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('countyName', {
             header: 'County',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('township', {
             header: 'TWN',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('range', {
             header: 'Range',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('section', {
             header: 'Section',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('legal', {
             header: 'Legal',
@@ -122,32 +122,32 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('tractOwner', {
             header: 'Owner',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
             size: 140,
           }),
           columnHelper.accessor('ownershipStatus', {
             header: 'Ownership Status',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('interestType', {
             header: 'Interest Type',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('grossAcres', {
             header: 'Gross Acres',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('netAcres', {
             header: 'Net Acres',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('deliveredNRI', {
             header: 'Delivered NRI(%)',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('costPerAcre', {
             header: 'Cost/Acres ($)',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
         ],
       }),
@@ -164,21 +164,21 @@ export function BasicTable() {
         columns: [
           columnHelper.accessor('instrumentType', {
             header: 'Instrument Type',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('assignorOrGrantor', {
             header: 'Assignor/Grantor',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
             size: 200,
           }),
           columnHelper.accessor('assigneeOrGrantee', {
             header: 'Assignee/Grantee',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
             size: 140,
           }),
           columnHelper.accessor('recordingNumber', {
             header: 'Recording Number',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('recordingDate', {
             header: 'Recording Date',
@@ -196,17 +196,17 @@ export function BasicTable() {
           }),
           columnHelper.accessor('lessor', {
             header: 'Lessor',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
             size: 120,
           }),
           columnHelper.accessor('lessee', {
             header: 'Lessee',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
             size: 120,
           }),
           columnHelper.accessor('leaseRecordingNumber', {
             header: 'lease recording number',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('leaseRecordingDate', {
             header: 'Lease Recording Date',
@@ -224,11 +224,11 @@ export function BasicTable() {
           }),
           columnHelper.accessor('leasePrimaryTerm', {
             header: 'Primary Term',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
           columnHelper.accessor('leaseOptionTerm', {
             header: 'Option Term',
-            cell: info => <JustTextCell info={info} />,
+            cell: info => <JustTextCell<Tract> info={info} />,
           }),
         ],
       }),
@@ -435,7 +435,9 @@ export function BasicTable() {
                       header.column.getIsPinned() === 'right' ? 0 : undefined,
                   }}
                 >
-                  {header.isPlaceholder ? null : <SubHeader header={header} />}
+                  {header.isPlaceholder ? null : (
+                    <SubHeader<Tract> header={header} />
+                  )}
                 </th>
               );
             })}
@@ -503,7 +505,6 @@ export function BasicTable() {
     </tbody>
   );
 
-  // FIXME:
   useEffect(() => {
     setColumnVisibilityState('ownership', 'hidden');
     setColumnVisibilityState('location', 'hidden');

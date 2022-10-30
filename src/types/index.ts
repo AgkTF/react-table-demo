@@ -47,3 +47,18 @@ export type OffsetValues = {
   subHeadersOffsets: number[];
 };
 export type ColVisibilityState = 'visible' | 'hidden';
+export type DSU = {
+  id: string;
+  wellAPI: string;
+  operatorShortName: string;
+  acres: number;
+  lateralLength: number;
+  formations: string;
+  lastModifiedDate: string;
+  basin: string;
+  state: string;
+  county: string;
+  location: string;
+  taggingAuthor?: string;
+  taggedDate?: string;
+};

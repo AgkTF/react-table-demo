@@ -1,13 +1,12 @@
 import { Header } from '@tanstack/react-table';
-import { Tract } from '../../types';
 import { ArrowLongUpIcon, ArrowLongDownIcon } from '@heroicons/react/20/solid';
 import { JustTextHeader } from './JustTextHeader';
 
-type Props = {
-  header: Header<Tract, unknown>;
+type Props<T> = {
+  header: Header<T, unknown>;
 };
 
-export function SubHeader({ header }: Props) {
+export function SubHeader<T>({ header }: Props<T>) {
   return (
     <>
       <div
