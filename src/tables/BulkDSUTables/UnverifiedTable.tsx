@@ -3,12 +3,10 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  VisibilityState,
-  ColumnDef,
   getSortedRowModel,
   SortingState,
 } from '@tanstack/react-table';
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { JustTextCell, SubHeader } from '../../components';
 import { MIN_WIDTH } from '../../constants';
 import { DSU } from '../../types';
@@ -16,7 +14,7 @@ import cn from 'classnames';
 import { createDsus } from '../../utils/create-random-dsu';
 
 const columnHelper = createColumnHelper<DSU>();
-const data = createDsus(15);
+const data = createDsus(5);
 const columns = [
   columnHelper.accessor('wellAPI', {
     header: 'well API',
@@ -41,7 +39,7 @@ export function UnverifiedTable() {
     data,
     columns,
     defaultColumn: {
-      // header: ({ header }) => <SubHeader<DSU> header={header} />,
+      minSize: MIN_WIDTH,
       cell: info => <JustTextCell<DSU> info={info} />,
     },
     state: {
@@ -66,6 +64,7 @@ export function UnverifiedTable() {
                 <th
                   key={header.id}
                   colSpan={header.colSpan}
+                  onClick={header.column.getToggleSortingHandler()}
                   className="py-2 px-3 relative border border-gray-200 group truncate"
                   style={{
                     minWidth: header.getSize(),
@@ -132,6 +131,25 @@ export function UnverifiedTable() {
           {theadContent}
           {tbodyContent}
         </table>
+      </div>
+
+      <div className="mt-5 text-xs text-slate-800 flex items-start gap-20">
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">columnSizing</h4>
+          <pre>{JSON.stringify(table.getState().columnSizing, null, 2)}</pre>
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">columnSizingInfo</h4>
+          <pre>
+            {JSON.stringify(table.getState().columnSizingInfo, null, 2)}
+          </pre>
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">sorting</h4>
+          <pre>{JSON.stringify(table.getState().sorting, null, 2)}</pre>
+        </div>
       </div>
     </section>
   );
