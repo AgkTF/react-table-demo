@@ -7,11 +7,10 @@ import {
   ColumnDef,
   getSortedRowModel,
   SortingState,
-  HeaderGroup,
 } from '@tanstack/react-table';
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { OffsetValues, SelectedCell, Tract } from '../../types';
-import { colsOffsets, createTracts, pinnedColsWidth } from '../../utils';
+import { createTracts } from '../../utils';
 import {
   EditableInputField,
   JustTextCell,
@@ -23,7 +22,11 @@ import {
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { MIN_WIDTH } from '../../constants';
 import cn from 'classnames';
-import { usePinnedCols } from '../../hooks';
+
+const leftValues: OffsetValues = {
+  mainHeadersOffsets: [0],
+  subHeadersOffsets: [0, 75],
+};
 
 const columnHelper = createColumnHelper<Tract>();
 
@@ -46,12 +49,14 @@ export function BasicTable() {
             header: '#',
             cell: info => <JustTextCell info={info} />,
             size: 75,
+            enableResizing: false,
           }),
           columnHelper.accessor('isActive', {
             header: 'status',
             cell: info => <TractStatusCell info={info} />,
             size: 80,
             enableSorting: false,
+            enableResizing: false,
           }),
         ],
       }),
@@ -308,9 +313,6 @@ export function BasicTable() {
   }, []);
 
   useOnClickOutside(tableRef, resetSelectedCells);
-  const leftValues = usePinnedCols<Tract>({
-    table,
-  });
 
   const theadContent = (
     <thead>
