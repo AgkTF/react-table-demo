@@ -23,6 +23,7 @@ import {
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { MIN_WIDTH } from '../../constants';
 import cn from 'classnames';
+import { usePinnedCols } from '../../hooks';
 
 const columnHelper = createColumnHelper<Tract>();
 
@@ -307,48 +308,9 @@ export function BasicTable() {
   }, []);
 
   useOnClickOutside(tableRef, resetSelectedCells);
-
-  // const leftPinnedHeaderGroups = useMemo(
-  //   () => table.getLeftHeaderGroups(),
-  //   [table]
-  // );
-  // console.log('left pinned header groups', leftPinnedHeaderGroups);
-
-  const pinnedColsWidth = (headerGroup: HeaderGroup<Tract>) => {
-    return headerGroup.headers.map(header => header.getSize());
-  };
-
-  const colsOffsets = (colWidths: number[]) => {
-    const offsets: number[] = [0, colWidths[0]];
-    colWidths.forEach((col, i) => {
-      if (i > 1) {
-        const sliced = colWidths.slice(0, i);
-        const offset = sliced.reduce((prev, curr) => prev + curr);
-        offsets.push(offset);
-      }
-    });
-
-    return offsets;
-  };
-
-  const pinnedColsLeftValues = useMemo(() => {
-    const leftPinnedHeaderGroups = table.getLeftHeaderGroups();
-
-    const mainHeadersWidth = pinnedColsWidth(leftPinnedHeaderGroups[0]);
-    // console.log('mainHeadersWidth', mainHeadersWidth);
-
-    const subHeadersWidth = pinnedColsWidth(leftPinnedHeaderGroups[1]);
-
-    const mainHeadersOffsets = colsOffsets(mainHeadersWidth);
-    const subHeadersOffsets = colsOffsets(subHeadersWidth);
-
-    return {
-      mainHeadersOffsets,
-      subHeadersOffsets,
-    };
-  }, []);
-
-  console.log('pinnedColsLeftValues', pinnedColsLeftValues);
+  const headersOffsets = usePinnedCols<Tract>({
+    table,
+  });
 
   const theadContent = (
     <thead>
@@ -363,7 +325,7 @@ export function BasicTable() {
                 'py-1 px-3 relative border border-gray-200 group truncate',
                 {
                   sticky: header.column.getIsPinned() === 'left',
-                  'bg-[#2f256a]': header.column.getIsPinned() === 'left',
+                  'bg-[#2f256a] z-10': header.column.getIsPinned() === 'left',
                 }
               );
               return (
@@ -376,7 +338,7 @@ export function BasicTable() {
                     maxWidth: MIN_WIDTH,
                     left:
                       header.column.getIsPinned() === 'left'
-                        ? pinnedColsLeftValues.mainHeadersOffsets[header.index]
+                        ? headersOffsets?.mainHeadersOffsets[header.index]
                         : undefined,
                   }}
                 >
@@ -416,7 +378,7 @@ export function BasicTable() {
                     maxWidth: MIN_WIDTH,
                     left:
                       header.column.getIsPinned() === 'left'
-                        ? pinnedColsLeftValues.subHeadersOffsets[header.index]
+                        ? headersOffsets?.subHeadersOffsets[header.index]
                         : undefined,
                   }}
                 >
@@ -469,7 +431,7 @@ export function BasicTable() {
                     maxWidth: MIN_WIDTH,
                     left:
                       cell.column.getIsPinned() === 'left'
-                        ? pinnedColsLeftValues.subHeadersOffsets[
+                        ? headersOffsets?.subHeadersOffsets[
                             cell.column.getPinnedIndex()
                           ]
                         : undefined,
@@ -511,10 +473,19 @@ export function BasicTable() {
           <h4 className="font-bold text-sm">columnSizing</h4>
           <pre>{JSON.stringify(table.getState().columnSizing, null, 2)}</pre>
         </div>
+
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">columnSizingInfo</h4>
+          <pre>
+            {JSON.stringify(table.getState().columnSizingInfo, null, 2)}
+          </pre>
+        </div>
+
         <div className="space-y-2">
           <h4 className="font-bold text-sm">sorting</h4>
           <pre>{JSON.stringify(table.getState().sorting, null, 2)}</pre>
         </div>
+
         <div className="space-y-2">
           <h4 className="font-bold text-sm">columnPinning</h4>
           <pre>{JSON.stringify(table.getState().columnPinning, null, 2)}</pre>
