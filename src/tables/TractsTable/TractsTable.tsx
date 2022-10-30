@@ -27,6 +27,7 @@ import {
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { MIN_WIDTH } from '../../constants';
 import cn from 'classnames';
+import ActionsCell from '../../components/ActionsCell/ActionsCell';
 
 const leftValues: OffsetValues = {
   mainHeadersOffsets: [0],
@@ -231,6 +232,20 @@ export function BasicTable() {
           }),
         ],
       }),
+      columnHelper.group({
+        id: 'actions',
+        header: () => <JustTextHeader title="actions" />,
+        enableSorting: false,
+        enableResizing: false,
+        columns: [
+          columnHelper.display({
+            header: 'actions',
+            cell: () => <ActionsCell />,
+            enableSorting: false,
+            enableResizing: false,
+          }),
+        ],
+      }),
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -244,6 +259,7 @@ export function BasicTable() {
       sorting,
       columnPinning: {
         left: ['tractNumber', 'isActive'],
+        right: ['actions'],
       },
     },
     columnResizeMode: 'onChange',
@@ -354,8 +370,9 @@ export function BasicTable() {
               const headerClasses = cn(
                 'py-1 px-3 relative border border-gray-200 group truncate',
                 {
-                  sticky: header.column.getIsPinned() === 'left',
-                  'bg-[#2f256a] z-10': header.column.getIsPinned() === 'left',
+                  'sticky bg-[#2f256a] z-10': ['left', 'right'].includes(
+                    header.column.getIsPinned() as string
+                  ),
                 }
               );
               return (
@@ -370,6 +387,8 @@ export function BasicTable() {
                       header.column.getIsPinned() === 'left'
                         ? leftValues.mainHeadersOffsets[header.index]
                         : undefined,
+                    right:
+                      header.column.getIsPinned() === 'right' ? 0 : undefined,
                   }}
                 >
                   {header.isPlaceholder
@@ -392,8 +411,10 @@ export function BasicTable() {
               const subHeaderClasses = cn(
                 'py-2 px-3 relative border border-gray-200 group truncate',
                 {
-                  'sticky bg-[#b7b6c9] text-[#4f477e] z-10':
-                    header.column.getIsPinned() === 'left',
+                  'sticky bg-[#b7b6c9] text-[#4f477e] z-10': [
+                    'left',
+                    'right',
+                  ].includes(header.column.getIsPinned() as string),
                 }
               );
 
@@ -410,6 +431,8 @@ export function BasicTable() {
                       header.column.getIsPinned() === 'left'
                         ? leftValues.subHeadersOffsets[header.index]
                         : undefined,
+                    right:
+                      header.column.getIsPinned() === 'right' ? 0 : undefined,
                   }}
                 >
                   {header.isPlaceholder ? null : <SubHeader header={header} />}
@@ -439,8 +462,9 @@ export function BasicTable() {
               const cellClasses = cn('p-3 text-[13px] text-[#4a4a4a]', {
                 'border-2 border-sky-400': isCellSelected,
                 'border border-gray-200': !isCellSelected,
-                sticky: cell.column.getIsPinned() === 'left',
-                'z-10': cell.column.getIsPinned() === 'left',
+                'z-10 sticky': ['left', 'right'].includes(
+                  cell.column.getIsPinned() as string
+                ),
                 'bg-[#f5f6f7]': i % 2 === 0,
                 'bg-white': i % 2 !== 0,
               });
@@ -465,6 +489,8 @@ export function BasicTable() {
                             cell.column.getPinnedIndex()
                           ]
                         : undefined,
+                    right:
+                      cell.column.getIsPinned() === 'right' ? 0 : undefined,
                   }}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
