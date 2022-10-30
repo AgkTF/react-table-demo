@@ -42,3 +42,7 @@ export type SelectedCell = {
   cellId: string;
   cellData: unknown;
 };
+export type OffsetValues = {
+  mainHeadersOffsets: number[];
+  subHeadersOffsets: number[];
+};

@@ -10,8 +10,8 @@ import {
   HeaderGroup,
 } from '@tanstack/react-table';
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { SelectedCell, Tract } from '../../types';
-import { createTracts } from '../../utils';
+import { OffsetValues, SelectedCell, Tract } from '../../types';
+import { colsOffsets, createTracts, pinnedColsWidth } from '../../utils';
 import {
   EditableInputField,
   JustTextCell,
@@ -308,7 +308,7 @@ export function BasicTable() {
   }, []);
 
   useOnClickOutside(tableRef, resetSelectedCells);
-  const headersOffsets = usePinnedCols<Tract>({
+  const leftValues = usePinnedCols<Tract>({
     table,
   });
 
@@ -338,7 +338,7 @@ export function BasicTable() {
                     maxWidth: MIN_WIDTH,
                     left:
                       header.column.getIsPinned() === 'left'
-                        ? headersOffsets?.mainHeadersOffsets[header.index]
+                        ? leftValues.mainHeadersOffsets[header.index]
                         : undefined,
                   }}
                 >
@@ -378,7 +378,7 @@ export function BasicTable() {
                     maxWidth: MIN_WIDTH,
                     left:
                       header.column.getIsPinned() === 'left'
-                        ? headersOffsets?.subHeadersOffsets[header.index]
+                        ? leftValues.subHeadersOffsets[header.index]
                         : undefined,
                   }}
                 >
@@ -431,7 +431,7 @@ export function BasicTable() {
                     maxWidth: MIN_WIDTH,
                     left:
                       cell.column.getIsPinned() === 'left'
-                        ? headersOffsets?.subHeadersOffsets[
+                        ? leftValues.subHeadersOffsets[
                             cell.column.getPinnedIndex()
                           ]
                         : undefined,

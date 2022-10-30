@@ -1,4 +1,6 @@
 import { Table, HeaderGroup } from '@tanstack/react-table';
+import { useEffect } from 'react';
+import { OffsetValues } from '../types';
 
 type Params<T> = {
   table: Table<T>;
@@ -21,21 +23,44 @@ function colsOffsets(colWidths: number[]) {
   return offsets;
 }
 
-/**
- * ? What to do next?
- */
+const leftOffsetValues: OffsetValues = {
+  mainHeadersOffsets: [],
+  subHeadersOffsets: [],
+};
 
-export function usePinnedCols<T>({ table }: Params<T>) {
+export function usePinnedCols<T>({ table }: Params<T>): OffsetValues {
+  const isSomeColsPinnedOnLeft = table.getIsSomeColumnsPinned('left');
+  if (!isSomeColsPinnedOnLeft) {
+    console.log('🌭');
+    return {
+      mainHeadersOffsets: [],
+      subHeadersOffsets: [],
+    };
+  }
+
   const leftPinnedHeaderGroups = table.getLeftHeaderGroups();
+  const sizingInfo = table.getState().columnSizingInfo;
+  const leftPinnedSubHeaderGroupsIds = leftPinnedHeaderGroups[1].headers.map(
+    h => h.id
+  );
 
+  if (
+    !leftPinnedSubHeaderGroupsIds.includes(
+      sizingInfo.isResizingColumn as string
+    )
+  ) {
+    return leftOffsetValues;
+  }
+
+  console.log('🧮');
   const mainHeadersWidth = pinnedColsWidth<T>(leftPinnedHeaderGroups[0]);
   const subHeadersWidth = pinnedColsWidth(leftPinnedHeaderGroups[1]);
 
   const mainHeadersOffsets = colsOffsets(mainHeadersWidth);
   const subHeadersOffsets = colsOffsets(subHeadersWidth);
 
-  return {
-    mainHeadersOffsets,
-    subHeadersOffsets,
-  };
+  leftOffsetValues.mainHeadersOffsets = mainHeadersOffsets;
+  leftOffsetValues.subHeadersOffsets = subHeadersOffsets;
+
+  return leftOffsetValues;
 }
