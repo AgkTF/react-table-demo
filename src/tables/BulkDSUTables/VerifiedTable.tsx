@@ -44,8 +44,8 @@ export function VerifiedTable() {
     <DSUTableTemplate
       columns={columns}
       data={data}
-      tableMainColor="#2d5f65"
       tableTitle="Verified DSUs"
+      tableId="verified"
     />
   );
 }

@@ -50,8 +50,8 @@ export function FlaggedForReviewTable() {
     <DSUTableTemplate
       columns={columns}
       data={data}
-      tableMainColor="#940605"
       tableTitle="DSUs Flagged for Review"
+      tableId="forReview"
     />
   );
 }

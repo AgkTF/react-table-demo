@@ -28,8 +28,8 @@ export function UnverifiedTable() {
     <DSUTableTemplate
       columns={columns}
       data={data}
-      tableMainColor="#4a4a4a"
       tableTitle="Unverified DSUs"
+      tableId="unverified"
     />
   );
 }
