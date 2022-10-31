@@ -15,12 +15,16 @@ import { createDsus } from '../../utils/create-random-dsu';
 
 const columnHelper = createColumnHelper<DSU>();
 const data = createDsus(5);
+
 const columns = [
   columnHelper.accessor('wellAPI', {
     header: 'well API',
   }),
   columnHelper.accessor('operatorShortName', {
     header: 'operator name',
+  }),
+  columnHelper.accessor('acres', {
+    header: 'acres QQ',
   }),
   columnHelper.accessor('county', {
     header: 'county',
@@ -31,9 +35,27 @@ const columns = [
   columnHelper.accessor('basin', {
     header: 'basin',
   }),
+  columnHelper.accessor('location', {
+    header: 'location',
+  }),
+  columnHelper.accessor('lateralLength', {
+    header: 'lateral Length',
+  }),
+  columnHelper.accessor('formations', {
+    header: 'formations',
+  }),
+  columnHelper.accessor('lastModifiedDate', {
+    header: 'last Modified Date',
+  }),
+  columnHelper.accessor('taggingAuthor', {
+    header: 'tagging Author',
+  }),
+  columnHelper.accessor('taggedDate', {
+    header: 'taggedDate',
+  }),
 ];
 
-export function UnverifiedTable() {
+export function FlaggedForReviewTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data,
@@ -57,7 +79,7 @@ export function UnverifiedTable() {
         return (
           <tr
             key={headerGroup.id}
-            className="bg-[#4a4a4a] text-white capitalize text-sm"
+            className="bg-[#940605] text-white capitalize text-sm"
           >
             {headerGroup.headers.map(header => {
               return (
@@ -121,7 +143,9 @@ export function UnverifiedTable() {
 
   return (
     <section>
-      <h3 className="font-semibold text-xl text-[#4a4a4a]">Unverified DSUs</h3>
+      <h3 className="font-semibold text-xl text-[#940605]">
+        DSUs Flagged for Review
+      </h3>
 
       <div className="w-full overflow-auto max-h-[1000px] relative">
         <table
