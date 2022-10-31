@@ -14,7 +14,7 @@ import cn from 'classnames';
 import { createDsus } from '../../utils/create-random-dsu';
 
 const columnHelper = createColumnHelper<DSU>();
-const data = createDsus(15);
+const data = createDsus(5);
 
 const columns = [
   columnHelper.accessor('wellAPI', {
@@ -47,15 +47,9 @@ const columns = [
   columnHelper.accessor('lastModifiedDate', {
     header: 'last Modified Date',
   }),
-  columnHelper.accessor('taggingAuthor', {
-    header: 'tagging Author',
-  }),
-  columnHelper.accessor('taggedDate', {
-    header: 'taggedDate',
-  }),
 ];
 
-export function FlaggedForReviewTable() {
+export function VerifiedTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useReactTable({
     data,
@@ -79,7 +73,7 @@ export function FlaggedForReviewTable() {
         return (
           <tr
             key={headerGroup.id}
-            className="bg-[#940605] text-white capitalize text-sm"
+            className="bg-[#2d5f65] text-white capitalize text-sm"
           >
             {headerGroup.headers.map(header => {
               return (
@@ -140,12 +134,9 @@ export function FlaggedForReviewTable() {
       })}
     </tbody>
   );
-
   return (
     <section>
-      <h3 className="font-semibold text-xl text-[#940605]">
-        DSUs Flagged for Review
-      </h3>
+      <h3 className="font-semibold text-xl text-[#2d5f65]">Verified DSUs</h3>
 
       <div className="w-full overflow-auto max-h-[440px] relative">
         <table className="mt-3 w-full">

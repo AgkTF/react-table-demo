@@ -1,5 +1,6 @@
 import { FlaggedForReviewTable } from './FlaggedForReviewTable';
 import { UnverifiedTable } from './UnverifiedTable';
+import { VerifiedTable } from './VerifiedTable';
 
 export function BulkDSUTables() {
   return (
@@ -10,6 +11,8 @@ export function BulkDSUTables() {
         <UnverifiedTable />
 
         <FlaggedForReviewTable />
+
+        <VerifiedTable />
       </div>
     </>
   );

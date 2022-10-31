@@ -14,7 +14,7 @@ import cn from 'classnames';
 import { createDsus } from '../../utils/create-random-dsu';
 
 const columnHelper = createColumnHelper<DSU>();
-const data = createDsus(5);
+const data = createDsus(150);
 const columns = [
   columnHelper.accessor('wellAPI', {
     header: 'well API',
@@ -123,11 +123,8 @@ export function UnverifiedTable() {
     <section>
       <h3 className="font-semibold text-xl text-[#4a4a4a]">Unverified DSUs</h3>
 
-      <div className="w-full overflow-auto max-h-[1000px] relative">
-        <table
-          className="mt-3 w-full"
-          // style={{ width: table.getCenterTotalSize() }}
-        >
+      <div className="w-full overflow-auto max-h-[440px] relative">
+        <table className="mt-3 w-full">
           {theadContent}
           {tbodyContent}
         </table>
