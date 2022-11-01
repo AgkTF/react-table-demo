@@ -6,6 +6,7 @@ import {
   SortingState,
   ColumnDef,
   getFilteredRowModel,
+  FilterFn,
 } from '@tanstack/react-table';
 import { useState } from 'react';
 import { DebouncedInput, JustTextCell, SubHeader } from '../../components';
@@ -18,6 +19,13 @@ type Props = {
   data: DSU[];
   tableTitle: string;
   tableId: 'verified' | 'unverified' | 'forReview';
+};
+
+const globalFilterFn: FilterFn<DSU> = (row, columnId, filterValue, addMeta) => {
+  const search = filterValue.toLowerCase();
+  const value = row.getValue(columnId) ? String(row.getValue(columnId)) : null;
+
+  return Boolean(value?.toLowerCase().includes(search));
 };
 
 export function DSUTableTemplate({
@@ -40,6 +48,7 @@ export function DSUTableTemplate({
       sorting,
       globalFilter,
     },
+    globalFilterFn,
     columnResizeMode: 'onChange',
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
@@ -135,7 +144,7 @@ export function DSUTableTemplate({
           type="text"
           onChange={value => setGlobalFilter(String(value))}
           placeholder="Search all columns..."
-          className={`w-1/4 text-sm rounded-md focus:outline-none focus:border-none`}
+          className={`w-1/4 text-sm rounded-md focus:outline-none focus:border-none max-w-xs`}
         />
       </div>
 
