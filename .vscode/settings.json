@@ -1,3 +1,24 @@
 {
-  "cSpell.words": ["Dsus", "ORRI", "Savitar"]
+  "cSpell.words": ["Dsus", "ORRI", "Savitar"],
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#df1cb8",
+    "activityBar.background": "#df1cb8",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#a4c619",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#df1cb8",
+    "statusBar.background": "#b21693",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#df1cb8",
+    "statusBarItem.remoteBackground": "#b21693",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "tab.activeBorder": "#df1cb8",
+    "titleBar.activeBackground": "#b21693",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#b2169399",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#b21693"
 }

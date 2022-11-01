@@ -10,11 +10,19 @@ export function Layout() {
         >
           Tracts Table
         </Link>
+
         <Link
           to="/bulk-dsu"
           className="font-semibold hover:text-purple-500 hover:underline"
         >
           Bulk DSU
+        </Link>
+
+        <Link
+          to="/ds-table"
+          className="font-semibold hover:text-purple-500 hover:underline"
+        >
+          DS Table
         </Link>
       </nav>
 
