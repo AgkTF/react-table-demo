@@ -1,36 +1,163 @@
-import { Column } from '../../components/ds/Table/ColumnAndCo/ColumnAndCo';
-import { Table } from '../../components/ds/Table/Table';
+import { useState } from 'react';
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getSortedRowModel,
+  SortingState,
+  ColumnDef,
+  createColumnHelper,
+} from '@tanstack/react-table';
+import { MIN_WIDTH } from '../../constants';
+import { JustTextCell, SubHeader } from '../../components';
+import { DSU } from '../../types';
+import { createDsus } from '../../utils/create-random-dsu';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+} from '../../components/ds';
+import cn from 'classnames';
 
-type Props = {};
+const data = createDsus(5);
+const columnHelper = createColumnHelper<DSU>();
+const columns = [
+  columnHelper.accessor('wellAPI', {
+    header: 'well API',
+  }),
+  columnHelper.accessor('operatorShortName', {
+    header: 'operator name',
+  }),
+  columnHelper.accessor('acres', {
+    header: 'acres QQ',
+  }),
+  columnHelper.accessor('county', {
+    header: 'county',
+  }),
+  columnHelper.accessor('state', {
+    header: 'state',
+  }),
+  columnHelper.accessor('basin', {
+    header: 'basin',
+  }),
+  columnHelper.accessor('location', {
+    header: 'location',
+  }),
+  columnHelper.accessor('lateralLength', {
+    header: 'lateral Length',
+  }),
+  columnHelper.accessor('formations', {
+    header: 'formations',
+  }),
+  columnHelper.accessor('lastModifiedDate', {
+    header: 'last Modified Date',
+  }),
+] as ColumnDef<DSU, string>[];
 
-export function DsTable({}: Props) {
+export function DsTable() {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const table = useReactTable({
+    data,
+    columns,
+    defaultColumn: {
+      minSize: MIN_WIDTH,
+      cell: info => <JustTextCell<DSU> info={info} />,
+    },
+    state: {
+      sorting,
+    },
+    columnResizeMode: 'onChange',
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+  });
+
   return (
     <>
       <h2 className="font-bold text-2xl text-purple-900">DS Table</h2>
 
-      <div className="mt-4 w-full overflow-auto max-h-[440px] relative">
-        <Table tableClasses="w-full">
-          {columns.map(column => (
-            <Table.Column>
-              <>
-                {Headers.map(header => (
-                  <Column.Header>
-                    {/* Here goes the header component  */}
-                  </Column.Header>
-                ))}
-              </>
+      <section className="mt-6 text-[#2d5f65]">
+        <h3 className={`font-semibold text-xl`}>Verified DSUs</h3>
 
-              <>
-                {rows.map(row => (
-                  <Column.Cell>
-                    {/* Here goes the Cell component  */}
-                  </Column.Cell>
-                ))}
-              </>
-            </Table.Column>
-          ))}
-        </Table>
-      </div>
+        <div className="mt-4 w-full overflow-auto max-h-[440px] relative">
+          <Table tableClasses="w-full">
+            <TableHead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <TableRow
+                  key={headerGroup.id}
+                  rowClasses="text-white capitalize text-sm bg-[#2d5f65]"
+                >
+                  {headerGroup.headers.map(header => (
+                    <TableHeaderCell
+                      key={header.id}
+                      cellClasses="py-2 px-3 relative border border-gray-200 group truncate"
+                      {...{
+                        colSpan: header.colSpan,
+                        onClick: header.column.getToggleSortingHandler(),
+                        style: {
+                          minWidth: header.getSize(),
+                          maxWidth: MIN_WIDTH,
+                        },
+                      }}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <SubHeader<DSU> header={header} />
+                      )}
+                    </TableHeaderCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+
+            <TableBody>
+              {table.getRowModel().rows.map((row, i) => {
+                const rowClasses = cn(
+                  'cursor-pointer truncate hover:bg-[#dddfe2]',
+                  {
+                    'bg-[#f5f6f7]': i % 2 === 0,
+                    'bg-white': i % 2 !== 0,
+                  }
+                );
+
+                return (
+                  <TableRow key={row.id} rowClasses={rowClasses}>
+                    {row.getVisibleCells().map(cell => {
+                      const cellClasses = cn(
+                        'p-3 text-[13px] text-[#4a4a4a] border border-[#9b9b9b80]',
+                        {
+                          'bg-[#f5f6f7]': i % 2 === 0,
+                          'bg-white': i % 2 !== 0,
+                        }
+                      );
+
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          cellClasses={cellClasses}
+                          {...{
+                            style: {
+                              maxWidth: MIN_WIDTH,
+                            },
+                          }}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      </section>
     </>
   );
 }
