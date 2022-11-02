@@ -1,12 +1,7 @@
-import { useState } from 'react';
 import {
   flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  SortingState,
-  ColumnDef,
   createColumnHelper,
+  ColumnDef,
 } from '@tanstack/react-table';
 import { MIN_WIDTH } from '../../constants';
 import { JustTextCell, SubHeader } from '../../components';
@@ -21,6 +16,7 @@ import {
   TableRow,
 } from '../../components/ds';
 import cn from 'classnames';
+import { useTableConfig } from '../../components/ds/hooks/useTableConfig';
 
 const data = createDsus(5);
 const columnHelper = createColumnHelper<DSU>();
@@ -58,22 +54,13 @@ const columns = [
 ] as ColumnDef<DSU, string>[];
 
 export function DsTable() {
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const table = useReactTable({
+  const table = useTableConfig<DSU>({
     data,
     columns,
     defaultColumn: {
       minSize: MIN_WIDTH,
       cell: info => <JustTextCell<DSU> info={info} />,
     },
-    state: {
-      sorting,
-    },
-    columnResizeMode: 'onChange',
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
@@ -127,11 +114,7 @@ export function DsTable() {
                   <TableRow key={row.id} rowClasses={rowClasses}>
                     {row.getVisibleCells().map(cell => {
                       const cellClasses = cn(
-                        'p-3 text-[13px] text-[#4a4a4a] border border-[#9b9b9b80]',
-                        {
-                          'bg-[#f5f6f7]': i % 2 === 0,
-                          'bg-white': i % 2 !== 0,
-                        }
+                        'p-3 text-[13px] text-[#4a4a4a] border border-[#9b9b9b80]'
                       );
 
                       return (

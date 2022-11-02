@@ -102,18 +102,10 @@ export function DSUTableTemplate({
         return (
           <tr key={row.id} className={rowClasses}>
             {row.getVisibleCells().map(cell => {
-              const cellClasses = cn(
-                'p-3 text-[13px] text-[#4a4a4a] border border-[#9b9b9b80]',
-                {
-                  'bg-[#f5f6f7]': i % 2 === 0,
-                  'bg-white': i % 2 !== 0,
-                }
-              );
-
               return (
                 <td
                   key={cell.id}
-                  className={cellClasses}
+                  className="p-3 text-[13px] text-[#4a4a4a] border border-[#9b9b9b80]"
                   style={{
                     maxWidth: MIN_WIDTH,
                   }}
