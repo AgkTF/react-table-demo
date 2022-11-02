@@ -65,12 +65,12 @@ export function DsTable() {
 
   return (
     <>
-      <h2 className="font-bold text-2xl text-purple-900">DS Table</h2>
+      <h2 className="font-bold text-2xl text-purple-900">Using DS Table</h2>
 
       <section className="mt-6 text-[#2d5f65]">
         <h3 className={`font-semibold text-xl`}>Verified DSUs</h3>
 
-        <div className="mt-4 w-full overflow-auto max-h-[440px] relative">
+        <div className="mt-4 pb-2 w-full overflow-auto max-h-[440px] relative">
           <Table tableClasses="w-full">
             <TableHead>
               {table.getHeaderGroups().map(headerGroup => (

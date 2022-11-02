@@ -22,7 +22,7 @@ export function Layout() {
           to="/ds-table"
           className="font-semibold hover:text-purple-500 hover:underline"
         >
-          DS Table
+          Using DS Table
         </Link>
       </nav>
 
