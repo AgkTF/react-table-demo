@@ -17,13 +17,6 @@ export function Layout() {
         >
           Bulk DSU
         </Link>
-
-        <Link
-          to="/ds-table"
-          className="font-semibold hover:text-purple-500 hover:underline"
-        >
-          DS Table
-        </Link>
       </nav>
 
       <Outlet />
