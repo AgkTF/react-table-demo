@@ -17,6 +17,7 @@ import {
 } from '../../components/ds';
 import cn from 'classnames';
 import { useTableConfig } from '../../components/ds/hooks/useTableConfig';
+import useSortingMiddleware from '../../components/ds/middlewares/useSortingMiddleware';
 
 const data = createDsus(5);
 const columnHelper = createColumnHelper<DSU>();
@@ -54,6 +55,8 @@ const columns = [
 ] as ColumnDef<DSU, string>[];
 
 export function DsTable() {
+  const sortingMiddleware = useSortingMiddleware();
+
   const table = useTableConfig<DSU>({
     data,
     columns,
@@ -61,6 +64,7 @@ export function DsTable() {
       minSize: MIN_WIDTH,
       cell: info => <JustTextCell<DSU> info={info} />,
     },
+    middleware: [sortingMiddleware],
   });
 
   return (

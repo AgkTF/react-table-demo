@@ -2,15 +2,14 @@ import {
   getCoreRowModel,
   useReactTable,
   ColumnDef,
-  SortingState,
-  getSortedRowModel,
+  TableOptions,
 } from '@tanstack/react-table';
-import { useState } from 'react';
 
 type HookParams<T> = {
   data: T[];
   columns: ColumnDef<T, string>[];
   defaultColumn?: Partial<ColumnDef<T, unknown>> | undefined;
+  middleware: any;
 };
 
 /**
@@ -22,21 +21,32 @@ export function useTableConfig<T>({
   data,
   columns,
   defaultColumn,
+  middleware,
 }: HookParams<T>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  // const [sorting, setSorting] = useState<SortingState>([]);
 
-  const table = useReactTable({
+  // const table = useReactTable({
+  //   data,
+  //   columns,
+  //   state: {
+  //     sorting,
+  //   },
+  //   defaultColumn,
+  //   columnResizeMode: 'onChange',
+  //   getCoreRowModel: getCoreRowModel(),
+  //   onSortingChange: setSorting,
+  //   getSortedRowModel: getSortedRowModel(),
+  // });
+
+  const completeConfigObj: TableOptions<T> = {
     data,
     columns,
-    state: {
-      sorting,
-    },
     defaultColumn,
-    columnResizeMode: 'onChange',
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-  });
+    ...middleware[0],
+  };
+
+  const table = useReactTable({ ...completeConfigObj });
 
   return table;
 }
