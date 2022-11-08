@@ -1,15 +1,16 @@
 import {
-  getCoreRowModel,
   useReactTable,
   ColumnDef,
   TableOptions,
+  getCoreRowModel,
 } from '@tanstack/react-table';
 
 type HookParams<T> = {
   data: T[];
   columns: ColumnDef<T, string>[];
   defaultColumn?: Partial<ColumnDef<T, unknown>> | undefined;
-  middleware: any;
+  middleware?: any[];
+  // middleware: TableMW<T>[];
 };
 
 /**
@@ -23,14 +24,19 @@ export function useTableConfig<T>({
   defaultColumn,
   middleware,
 }: HookParams<T>) {
-  const mws = middleware.reduce((prev: any, curr: any) => {
-    return { ...prev, ...curr };
-  }, {});
+  const mws = middleware?.reduce((prevResult, currFn, i) => {
+    if (i !== middleware.length - 1) {
+      return currFn(prevResult);
+    }
+    return currFn(prevResult).build();
+  }, undefined);
 
   const completeConfigObj: TableOptions<T> = {
     data,
     columns,
     defaultColumn,
+    enableSorting: false,
+    getCoreRowModel: getCoreRowModel(),
     ...mws,
   };
 

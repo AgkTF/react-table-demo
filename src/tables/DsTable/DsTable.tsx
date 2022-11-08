@@ -68,7 +68,8 @@ export function DsTable() {
       minSize: MIN_WIDTH,
       cell: info => <JustTextCell<DSU> info={info} />,
     },
-    middleware: [sortingMiddleware, resizingMiddleware],
+    // middleware: [sortingMiddleware, resizingMiddleware],
+    // middleware: [sortingMiddleware],
   });
 
   return (

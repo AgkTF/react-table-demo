@@ -1,6 +1,5 @@
 import {
   ColumnResizeMode,
-  getCoreRowModel,
   getSortedRowModel,
   SortingState,
   TableOptions,
@@ -19,9 +18,7 @@ export class ConfigObjBuilder<T> implements Builder {
   private _product: Partial<TableOptions<T>>;
 
   constructor() {
-    this._product = {
-      getCoreRowModel: getCoreRowModel(),
-    };
+    this._product = {};
   }
 
   addSorting(

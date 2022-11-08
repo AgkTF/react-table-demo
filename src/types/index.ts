@@ -1,3 +1,5 @@
+import { ConfigObjBuilder } from '../utils';
+
 export type InterestType = 'WI' | 'ORRI' | 'MI';
 export type InstrumentType = 'Oil&Gas Lease' | 'Assignment' | 'Mineral Deed';
 export type Tract = {
@@ -62,3 +64,6 @@ export type DSU = {
   taggingAuthor?: string;
   taggedDate?: string;
 };
+export type TableMW<T> = (
+  configObj?: ConfigObjBuilder<T>
+) => ConfigObjBuilder<T> | ConfigObjBuilder<T>;
