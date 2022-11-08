@@ -18,7 +18,10 @@ export class ConfigObjBuilder<T> implements Builder {
   private _product: Partial<TableOptions<T>>;
 
   constructor() {
-    this._product = {};
+    this._product = {
+      enableSorting: false,
+      enableColumnResizing: false,
+    };
   }
 
   addSorting(
@@ -31,6 +34,7 @@ export class ConfigObjBuilder<T> implements Builder {
       this._product.state = {};
       this._product.state.sorting = sorting;
     }
+    this._product.enableSorting = true;
     this._product.onSortingChange = setSorting;
     this._product.getSortedRowModel = getSortedRowModel();
 
@@ -38,6 +42,7 @@ export class ConfigObjBuilder<T> implements Builder {
   }
 
   addResizing(columnResizeMode: ColumnResizeMode): this {
+    this._product.enableColumnResizing = true;
     this._product.columnResizeMode = columnResizeMode;
 
     return this;

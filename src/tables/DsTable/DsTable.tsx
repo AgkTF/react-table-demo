@@ -68,8 +68,8 @@ export function DsTable() {
       minSize: MIN_WIDTH,
       cell: info => <JustTextCell<DSU> info={info} />,
     },
-    // middleware: [sortingMiddleware, resizingMiddleware],
-    // middleware: [sortingMiddleware],
+    middleware: [sortingMiddleware, resizingMiddleware],
+    // middleware: [],
   });
 
   return (
@@ -149,6 +149,11 @@ export function DsTable() {
             </TableBody>
           </Table>
         </div>
+      </section>
+
+      <section className="mt-5">
+        <h2 className="font-bold text-2xl text-purple-900">Table State</h2>
+        <pre>{JSON.stringify(table.getState(), null, 2)}</pre>
       </section>
     </>
   );
