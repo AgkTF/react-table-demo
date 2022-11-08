@@ -23,21 +23,6 @@ export function useTableConfig<T>({
   defaultColumn,
   middleware,
 }: HookParams<T>) {
-  // const [sorting, setSorting] = useState<SortingState>([]);
-
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   state: {
-  //     sorting,
-  //   },
-  //   defaultColumn,
-  //   columnResizeMode: 'onChange',
-  //   getCoreRowModel: getCoreRowModel(),
-  //   onSortingChange: setSorting,
-  //   getSortedRowModel: getSortedRowModel(),
-  // });
-
   const mws = middleware.reduce((prev: any, curr: any) => {
     return { ...prev, ...curr };
   }, {});
@@ -46,7 +31,6 @@ export function useTableConfig<T>({
     data,
     columns,
     defaultColumn,
-    getCoreRowModel: getCoreRowModel(),
     ...mws,
   };
 

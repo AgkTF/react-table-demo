@@ -1,13 +1,10 @@
-import { ColumnResizeMode, TableOptions } from '@tanstack/react-table';
+import { ColumnResizeMode } from '@tanstack/react-table';
+import { ConfigObjBuilder } from '../../../utils';
 
 type Props = {
   columnResizeMode: ColumnResizeMode;
 };
 
 export default function useResizingMiddleware<T>({ columnResizeMode }: Props) {
-  const configObj: Partial<TableOptions<T>> = {
-    columnResizeMode,
-  };
-
-  return configObj;
+  return new ConfigObjBuilder<T>().addResizing(columnResizeMode).build();
 }

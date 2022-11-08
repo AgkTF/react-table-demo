@@ -1,20 +1,13 @@
-import {
-  getSortedRowModel,
-  SortingState,
-  TableOptions,
-} from '@tanstack/react-table';
+import { SortingState } from '@tanstack/react-table';
 import { useState } from 'react';
+import { ConfigObjBuilder } from '../../../utils';
 
 export default function useSortingMiddleware<T>() {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const configObj: Partial<TableOptions<T>> = {
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-  };
+  const configObj = new ConfigObjBuilder<T>()
+    .addSorting(sorting, setSorting)
+    .build();
 
   return configObj;
 }

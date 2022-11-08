@@ -20,7 +20,6 @@ export class ConfigObjBuilder<T> implements Builder {
 
   constructor() {
     this._product = {
-      state: {},
       getCoreRowModel: getCoreRowModel(),
     };
   }
@@ -30,6 +29,9 @@ export class ConfigObjBuilder<T> implements Builder {
     setSorting: Dispatch<SetStateAction<SortingState>>
   ): this {
     if (this._product.state) {
+      this._product.state.sorting = sorting;
+    } else {
+      this._product.state = {};
       this._product.state.sorting = sorting;
     }
     this._product.onSortingChange = setSorting;
@@ -44,7 +46,7 @@ export class ConfigObjBuilder<T> implements Builder {
     return this;
   }
 
-  getConfigObj(): Partial<TableOptions<T>> {
+  build(): Partial<TableOptions<T>> {
     return this._product;
   }
 }
