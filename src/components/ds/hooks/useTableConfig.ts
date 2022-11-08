@@ -38,12 +38,16 @@ export function useTableConfig<T>({
   //   getSortedRowModel: getSortedRowModel(),
   // });
 
+  const mws = middleware.reduce((prev: any, curr: any) => {
+    return { ...prev, ...curr };
+  }, {});
+
   const completeConfigObj: TableOptions<T> = {
     data,
     columns,
     defaultColumn,
     getCoreRowModel: getCoreRowModel(),
-    ...middleware[0],
+    ...mws,
   };
 
   const table = useReactTable({ ...completeConfigObj });
