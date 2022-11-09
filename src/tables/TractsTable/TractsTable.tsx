@@ -332,6 +332,7 @@ export function BasicTable() {
 
       setColumnVisibility(prev => ({ ...prev, ...updatedLocationColsState }));
     },
+    // FIXME: this should be table.getAllLeafColumns() instead of table
     [table]
   );
 
@@ -546,6 +547,13 @@ export function BasicTable() {
         <div className="space-y-2">
           <h4 className="font-bold text-sm">columnPinning</h4>
           <pre>{JSON.stringify(table.getState().columnPinning, null, 2)}</pre>
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="font-bold text-sm">columnVisibility</h4>
+          <pre>
+            {JSON.stringify(table.getState().columnVisibility, null, 2)}
+          </pre>
         </div>
       </div>
     </>

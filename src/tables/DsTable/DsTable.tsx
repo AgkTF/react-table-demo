@@ -69,7 +69,6 @@ export function DsTable() {
       cell: info => <JustTextCell<DSU> info={info} />,
     },
     middleware: [sortingMiddleware, resizingMiddleware],
-    // middleware: [],
   });
 
   return (

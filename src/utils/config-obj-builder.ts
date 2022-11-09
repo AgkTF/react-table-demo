@@ -3,6 +3,7 @@ import {
   getSortedRowModel,
   SortingState,
   TableOptions,
+  VisibilityState,
 } from '@tanstack/react-table';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -12,6 +13,10 @@ interface Builder {
     setSorting: Dispatch<SetStateAction<SortingState>>
   ): this;
   addResizing(columnResizeMode: ColumnResizeMode): this;
+  addColVis(
+    columnVisibility: VisibilityState,
+    setColumnVisibility: Dispatch<SetStateAction<VisibilityState>>
+  ): this;
 }
 
 export class ConfigObjBuilder<T> implements Builder {
@@ -44,6 +49,21 @@ export class ConfigObjBuilder<T> implements Builder {
   addResizing(columnResizeMode: ColumnResizeMode): this {
     this._product.enableColumnResizing = true;
     this._product.columnResizeMode = columnResizeMode;
+
+    return this;
+  }
+
+  addColVis(
+    columnVisibility: VisibilityState,
+    setColumnVisibility: React.Dispatch<SetStateAction<VisibilityState>>
+  ): this {
+    if (this._product.state) {
+      this._product.state.columnVisibility = columnVisibility;
+    } else {
+      this._product.state = {};
+      this._product.state.columnVisibility = columnVisibility;
+    }
+    this._product.onColumnVisibilityChange = setColumnVisibility;
 
     return this;
   }
