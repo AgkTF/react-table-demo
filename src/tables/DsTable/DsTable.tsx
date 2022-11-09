@@ -151,7 +151,7 @@ export function DsTable() {
         </div>
       </section>
 
-      <section className="mt-5">
+      <section className="mt-5 space-y-3">
         <h2 className="font-bold text-2xl text-purple-900">Table State</h2>
         <pre>{JSON.stringify(table.getState(), null, 2)}</pre>
       </section>
