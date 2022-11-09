@@ -1,12 +1,8 @@
 import {
   createColumnHelper,
   flexRender,
-  getCoreRowModel,
-  useReactTable,
   VisibilityState,
   ColumnDef,
-  getSortedRowModel,
-  SortingState,
 } from '@tanstack/react-table';
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import {
@@ -30,6 +26,7 @@ import cn from 'classnames';
 import ActionsCell from '../../components/ActionsCell/ActionsCell';
 import { useTableConfig } from '../../components/ds/hooks/useTableConfig';
 import {
+  useColPinningMW,
   useColVisMiddleware,
   useResizingMiddleware,
   useSortingMiddleware,
@@ -256,6 +253,10 @@ export function TractsTableByDS() {
     columnResizeMode: 'onChange',
   });
   const { colVisMW, setColumnVisibility } = useColVisMiddleware<Tract>();
+  const { colPinningMW } = useColPinningMW<Tract>({
+    left: ['tractNumber', 'isActive'],
+    right: ['actions'],
+  });
 
   const table = useTableConfig<Tract>({
     data,
@@ -264,7 +265,7 @@ export function TractsTableByDS() {
       minSize: MIN_WIDTH,
       size: 90,
     },
-    middleware: [sortingMiddleware, resizingMiddleware, colVisMW],
+    middleware: [sortingMiddleware, resizingMiddleware, colVisMW, colPinningMW],
   });
 
   const currentColsState = useCallback(
