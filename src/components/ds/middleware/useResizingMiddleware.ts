@@ -5,7 +5,7 @@ type Props = {
   columnResizeMode: ColumnResizeMode;
 };
 
-export default function useResizingMiddlewareV2<T>({
+export function useResizingMiddleware<T>({
   columnResizeMode,
 }: Props): MWReturn<T> {
   return (configObj?: Partial<TableOptions<T>>) => {

@@ -1,24 +1,35 @@
-import { VisibilityState } from '@tanstack/react-table';
+import { TableOptions, VisibilityState } from '@tanstack/react-table';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { TableMW } from '../../../types';
-import { ConfigObjBuilder } from '../../../utils';
+import { MWReturn } from '../../../types';
 
 export function useColVisMiddleware<T>(): {
-  colVisMW: TableMW<T>;
+  colVisMW: MWReturn<T>;
   setColumnVisibility: Dispatch<SetStateAction<VisibilityState>>;
 } {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   return {
     setColumnVisibility,
-    colVisMW: (configObj?: ConfigObjBuilder<T>) => {
-      return (
-        configObj?.addColVis(columnVisibility, setColumnVisibility) ||
-        new ConfigObjBuilder<T>().addColVis(
+    colVisMW: (configObj?: Partial<TableOptions<T>>) => {
+      const objToReturn: Partial<TableOptions<T>> = {
+        state: {
           columnVisibility,
-          setColumnVisibility
-        )
-      );
+        },
+        onColumnVisibilityChange: setColumnVisibility,
+      };
+
+      if (configObj) {
+        return {
+          ...configObj,
+          ...objToReturn,
+          state: {
+            ...configObj.state,
+            ...objToReturn.state,
+          },
+        };
+      }
+
+      return objToReturn;
     },
   };
 }

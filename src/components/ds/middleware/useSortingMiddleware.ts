@@ -6,7 +6,7 @@ import {
 import { useState } from 'react';
 import { MWReturn } from '../../../types';
 
-export default function useSortingMiddleware<T>(): MWReturn<T> {
+export function useSortingMiddleware<T>(): MWReturn<T> {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   return (configObj?: Partial<TableOptions<T>>) => {
@@ -23,6 +23,10 @@ export default function useSortingMiddleware<T>(): MWReturn<T> {
       return {
         ...configObj,
         ...objToReturn,
+        state: {
+          ...configObj.state,
+          ...objToReturn.state,
+        },
       };
     }
 

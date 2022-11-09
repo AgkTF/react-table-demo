@@ -17,8 +17,12 @@ import {
 } from '../../components/ds';
 import cn from 'classnames';
 import { useTableConfig } from '../../components/ds/hooks/useTableConfig';
-import useResizingMiddleware from '../../components/ds/middleware/useResizingMiddleware';
-import useSortingMiddleware from '../../components/ds/middleware/useSortingMiddleware';
+import {
+  useColVisMiddleware,
+  useResizingMiddleware,
+  useSortingMiddleware,
+} from '../../components/ds/middleware';
+import { useEffect } from 'react';
 
 const data = createDsus(5);
 const columnHelper = createColumnHelper<DSU>();
@@ -60,6 +64,7 @@ export function DsTable() {
   const resizingMiddleware = useResizingMiddleware<DSU>({
     columnResizeMode: 'onChange',
   });
+  const { colVisMW } = useColVisMiddleware<DSU>();
 
   const table = useTableConfig<DSU>({
     data,
@@ -68,8 +73,14 @@ export function DsTable() {
       minSize: MIN_WIDTH,
       cell: info => <JustTextCell<DSU> info={info} />,
     },
-    middleware: [resizingMiddleware, sortingMiddleware],
+    middleware: [resizingMiddleware, sortingMiddleware, colVisMW],
   });
+
+  // useEffect(() => {
+  //   setColumnVisibility({
+  //     county: false,
+  //   });
+  // }, [setColumnVisibility]);
 
   return (
     <>
