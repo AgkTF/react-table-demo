@@ -8,7 +8,7 @@ import { MWReturn } from '../../../types';
 
 type HookParams<T> = {
   data: T[];
-  columns: ColumnDef<T, string>[];
+  columns: ColumnDef<T, unknown>[];
   defaultColumn?: Partial<ColumnDef<T, unknown>> | undefined;
   middleware: MWReturn<T>[];
 };
@@ -42,7 +42,7 @@ export function useTableConfig<T>({
     getCoreRowModel: getCoreRowModel(),
     ...mws,
   };
-  console.log('mws', mws);
+  // console.log('mws', mws);
 
   const table = useReactTable({ ...completeConfigObj });
   return table;

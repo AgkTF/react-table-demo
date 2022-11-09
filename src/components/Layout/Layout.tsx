@@ -22,7 +22,14 @@ export function Layout() {
           to="/ds-table"
           className="font-semibold hover:text-purple-500 hover:underline"
         >
-          Using DS Table
+          Verified By DS Table
+        </Link>
+
+        <Link
+          to="/ds-tracts-table"
+          className="font-semibold hover:text-purple-500 hover:underline"
+        >
+          Tracts Table By DS Table
         </Link>
       </nav>
 

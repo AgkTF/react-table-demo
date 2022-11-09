@@ -38,7 +38,7 @@ const columnHelper = createColumnHelper<Tract>();
 
 const data = createTracts(5);
 
-export function BasicTable() {
+export function TractsTable() {
   const tableRef = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [sorting, setSorting] = useState<SortingState>([]);

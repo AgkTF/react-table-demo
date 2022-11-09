@@ -22,7 +22,6 @@ import {
   useResizingMiddleware,
   useSortingMiddleware,
 } from '../../components/ds/middleware';
-import { useEffect } from 'react';
 
 const data = createDsus(5);
 const columnHelper = createColumnHelper<DSU>();
@@ -57,7 +56,7 @@ const columns = [
   columnHelper.accessor('lastModifiedDate', {
     header: 'last Modified Date',
   }),
-] as ColumnDef<DSU, string>[];
+] as ColumnDef<DSU>[];
 
 export function DsTable() {
   const sortingMiddleware = useSortingMiddleware<DSU>();
@@ -75,12 +74,6 @@ export function DsTable() {
     },
     middleware: [resizingMiddleware, sortingMiddleware, colVisMW],
   });
-
-  // useEffect(() => {
-  //   setColumnVisibility({
-  //     county: false,
-  //   });
-  // }, [setColumnVisibility]);
 
   return (
     <>
