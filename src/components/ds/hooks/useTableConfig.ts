@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
 } from '@tanstack/react-table';
 import { MWReturn } from '../../../types';
-// import { ConfigObjBuilder } from '../../../utils';
 
 type HookParams<T> = {
   data: T[];
@@ -30,15 +29,6 @@ export function useTableConfig<T>({
     enableColumnResizing: false,
   };
 
-  // const mws = middleware.length
-  //   ? middleware.reduce((prevResult, currFn, i) => {
-  //       if (i !== middleware.length - 1) {
-  //         return currFn(prevResult);
-  //       }
-  //       return currFn(prevResult).build();
-  //     }, undefined)
-  //   : new ConfigObjBuilder<T>().build();
-
   const mws = middleware.length
     ? middleware.reduce((prevResult, currFn) => {
         return currFn(prevResult);
@@ -52,11 +42,8 @@ export function useTableConfig<T>({
     getCoreRowModel: getCoreRowModel(),
     ...mws,
   };
-
   console.log('mws', mws);
 
   const table = useReactTable({ ...completeConfigObj });
-  console.log('completeConfigObj', completeConfigObj);
-
   return table;
 }

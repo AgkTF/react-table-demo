@@ -1,15 +1,31 @@
-import { SortingState } from '@tanstack/react-table';
+import {
+  getSortedRowModel,
+  SortingState,
+  TableOptions,
+} from '@tanstack/react-table';
 import { useState } from 'react';
-import { TableMW } from '../../../types';
-import { ConfigObjBuilder } from '../../../utils';
+import { MWReturn } from '../../../types';
 
-export default function useSortingMiddleware<T>(): TableMW<T> {
+export default function useSortingMiddleware<T>(): MWReturn<T> {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  return (configObj?: ConfigObjBuilder<T>) => {
-    return (
-      configObj?.addSorting(sorting, setSorting) ||
-      new ConfigObjBuilder<T>().addSorting(sorting, setSorting)
-    );
+  return (configObj?: Partial<TableOptions<T>>) => {
+    const objToReturn: Partial<TableOptions<T>> = {
+      state: {
+        sorting,
+      },
+      enableSorting: true,
+      onSortingChange: setSorting,
+      getSortedRowModel: getSortedRowModel(),
+    };
+
+    if (configObj) {
+      return {
+        ...configObj,
+        ...objToReturn,
+      };
+    }
+
+    return objToReturn;
   };
 }

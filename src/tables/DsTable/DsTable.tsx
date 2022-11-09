@@ -17,8 +17,8 @@ import {
 } from '../../components/ds';
 import cn from 'classnames';
 import { useTableConfig } from '../../components/ds/hooks/useTableConfig';
-// import useSortingMiddleware from '../../components/ds/middleware/useSortingMiddleware';
-import useResizingMiddlewareV2 from '../../components/ds/middleware/useResizingMiddleware';
+import useResizingMiddleware from '../../components/ds/middleware/useResizingMiddleware';
+import useSortingMiddleware from '../../components/ds/middleware/useSortingMiddleware';
 
 const data = createDsus(5);
 const columnHelper = createColumnHelper<DSU>();
@@ -56,8 +56,8 @@ const columns = [
 ] as ColumnDef<DSU, string>[];
 
 export function DsTable() {
-  // const sortingMiddleware = useSortingMiddleware<DSU>();
-  const resizingMiddleware = useResizingMiddlewareV2<DSU>({
+  const sortingMiddleware = useSortingMiddleware<DSU>();
+  const resizingMiddleware = useResizingMiddleware<DSU>({
     columnResizeMode: 'onChange',
   });
 
@@ -68,8 +68,7 @@ export function DsTable() {
       minSize: MIN_WIDTH,
       cell: info => <JustTextCell<DSU> info={info} />,
     },
-    middleware: [resizingMiddleware],
-    // middleware: [sortingMiddleware, resizingMiddleware],
+    middleware: [resizingMiddleware, sortingMiddleware],
   });
 
   return (
