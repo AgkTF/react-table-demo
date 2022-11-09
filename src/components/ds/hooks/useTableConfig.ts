@@ -4,13 +4,14 @@ import {
   TableOptions,
   getCoreRowModel,
 } from '@tanstack/react-table';
-import { ConfigObjBuilder } from '../../../utils';
+import { MWReturn } from '../../../types';
+// import { ConfigObjBuilder } from '../../../utils';
 
 type HookParams<T> = {
   data: T[];
   columns: ColumnDef<T, string>[];
   defaultColumn?: Partial<ColumnDef<T, unknown>> | undefined;
-  middleware: any[];
+  middleware: MWReturn<T>[];
 };
 
 /**
@@ -24,14 +25,25 @@ export function useTableConfig<T>({
   defaultColumn,
   middleware,
 }: HookParams<T>) {
+  const defaultConfigObj: Partial<TableOptions<T>> = {
+    enableSorting: false,
+    enableColumnResizing: false,
+  };
+
+  // const mws = middleware.length
+  //   ? middleware.reduce((prevResult, currFn, i) => {
+  //       if (i !== middleware.length - 1) {
+  //         return currFn(prevResult);
+  //       }
+  //       return currFn(prevResult).build();
+  //     }, undefined)
+  //   : new ConfigObjBuilder<T>().build();
+
   const mws = middleware.length
-    ? middleware.reduce((prevResult, currFn, i) => {
-        if (i !== middleware.length - 1) {
-          return currFn(prevResult);
-        }
-        return currFn(prevResult).build();
-      }, undefined)
-    : new ConfigObjBuilder<T>().build();
+    ? middleware.reduce((prevResult, currFn) => {
+        return currFn(prevResult);
+      }, defaultConfigObj)
+    : defaultConfigObj;
 
   const completeConfigObj: TableOptions<T> = {
     data,
@@ -41,7 +53,10 @@ export function useTableConfig<T>({
     ...mws,
   };
 
+  console.log('mws', mws);
+
   const table = useReactTable({ ...completeConfigObj });
+  console.log('completeConfigObj', completeConfigObj);
 
   return table;
 }

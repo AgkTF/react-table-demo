@@ -1,3 +1,4 @@
+import { TableOptions } from '@tanstack/react-table';
 import { ConfigObjBuilder } from '../utils';
 
 export type InterestType = 'WI' | 'ORRI' | 'MI';
@@ -67,3 +68,7 @@ export type DSU = {
 export type TableMW<T> = (
   configObj?: ConfigObjBuilder<T>
 ) => ConfigObjBuilder<T> | ConfigObjBuilder<T>;
+
+export type MWReturn<T> = (
+  configObj?: Partial<TableOptions<T>>
+) => Partial<TableOptions<T>>;
