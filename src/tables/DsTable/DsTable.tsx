@@ -17,9 +17,8 @@ import {
 } from '../../components/ds';
 import cn from 'classnames';
 import { useTableConfig } from '../../components/ds/hooks/useTableConfig';
-// import useSortingMiddleware from '../../components/ds/middlewares/useSortingMiddleware';
-// import useResizingMiddleware from '../../components/ds/middlewares/useResizingMiddleware';
-import useResizingMiddlewareV2 from '../../components/ds/middlewares/useResizingMiddlewareV2';
+// import useSortingMiddleware from '../../components/ds/middleware/useSortingMiddleware';
+import useResizingMiddlewareV2 from '../../components/ds/middleware/useResizingMiddleware';
 
 const data = createDsus(5);
 const columnHelper = createColumnHelper<DSU>();
@@ -58,9 +57,6 @@ const columns = [
 
 export function DsTable() {
   // const sortingMiddleware = useSortingMiddleware<DSU>();
-  // const resizingMiddleware = useResizingMiddleware<DSU>({
-  //   columnResizeMode: 'onChange',
-  // });
   const resizingMiddleware = useResizingMiddlewareV2<DSU>({
     columnResizeMode: 'onChange',
   });
